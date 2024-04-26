@@ -45,7 +45,7 @@ namespace WorkoutReservations.Application.Services
                 .Include(workout => workout.Locations)
                 .FirstAsync(w => w.Id == id);
 
-            WorkoutDetailsDto viewModel = new WorkoutDetailsDto()
+            WorkoutDetailsDto workoutDto = new WorkoutDetailsDto()
             {
                 Id = workout.Id.ToString(),
                 Title = workout.Title,
@@ -60,7 +60,7 @@ namespace WorkoutReservations.Application.Services
                 WorkoutCategory = workout.WorkoutCategory.ToString()!
             };
 
-            return viewModel;
+            return workoutDto;
         }
         public async Task<IEnumerable<AllWorkoutsDto>> SearchWorkoutByCriteriaAsync(string criteria)
         {

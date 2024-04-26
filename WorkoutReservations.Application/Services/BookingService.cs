@@ -26,7 +26,7 @@ namespace WorkoutReservations.Application.Services
             var trainer = booking!.Workout.Trainers.FirstOrDefault();
             var location = booking.Workout.Locations.FirstOrDefault();
 
-            var viewModel = new BookingDetailsDto
+            var dto = new BookingDetailsDto
             {
                 Id = booking.Id.ToString(),
                 WorkoutTitle = booking.Workout.Title,
@@ -36,7 +36,7 @@ namespace WorkoutReservations.Application.Services
                 TrainerPhoneNumber = trainer!.PhoneNumber!
             };
 
-            return viewModel;
+            return dto;
         }
 
         public async Task<bool> ExistsByIdAsync(Guid id)
