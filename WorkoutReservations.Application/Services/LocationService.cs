@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using WorkoutReservations.Application.DTOs.Location;
 using WorkoutReservations.Application.Services.Interfaces;
 using WorkoutReservations.Infrastructure.Database;
 
@@ -41,12 +42,17 @@ namespace WorkoutReservations.Application.Services
             return cities;
         }
 
-        public async Task<IEnumerable<dynamic>> LocationsByWorkoutIdAsync(Guid Id)
+        public async Task<IEnumerable<LocationDto>> LocationsByWorkoutIdAsync(Guid Id)
         {
             var locations = await _workoutReservationsDbContext
                 .Locations
                 .Where(l => l.Workouts.Any(w => w.Id == Id))
-                .Select(x=> new { x.City, x.Address})
+                .Select(l => new LocationDto
+                {
+                    Id = l.Id,
+                    City = l.City,
+                    Address = l.Address
+                })
                 .ToListAsync();
 
             return locations;

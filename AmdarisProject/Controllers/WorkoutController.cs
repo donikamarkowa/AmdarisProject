@@ -11,14 +11,10 @@ namespace AmdarisProject.Controllers
     public class WorkoutController : ControllerBase
     {
         private readonly IWorkoutService _workoutService;
-        private readonly ILocationService _locationService;
-        private readonly IScheduleService _scheduleService;
         private readonly IWorkoutCategoryService _workoutCategoryService;
-        public WorkoutController(IWorkoutService workoutService, ILocationService locationService, IScheduleService scheduleService, IWorkoutCategoryService workoutCategoryService)
+        public WorkoutController(IWorkoutService workoutService, IWorkoutCategoryService workoutCategoryService)
         {
             _workoutService = workoutService;
-            _locationService = locationService;
-            _scheduleService = scheduleService;
             _workoutCategoryService = workoutCategoryService;
         }
 

@@ -1,4 +1,4 @@
-﻿using WorkoutReservations.Domain.Entities;
+﻿using WorkoutReservations.Application.DTOs.Location;
 
 namespace WorkoutReservations.Application.Services.Interfaces
 {
@@ -7,6 +7,6 @@ namespace WorkoutReservations.Application.Services.Interfaces
         public Task<IEnumerable<string>> CitiesByWorkoutIdAsync(Guid workoutId);
         public Task<IEnumerable<string>> AddressesByCityAsync(string city);
         public Task<bool> AddressHasSchedulesByLocationIdAsync(Guid id);
-        public Task<IEnumerable<dynamic>> LocationsByWorkoutIdAsync(Guid Id);
+        public Task<IEnumerable<LocationDto>> LocationsByWorkoutIdAsync(Guid Id);
     }
 }

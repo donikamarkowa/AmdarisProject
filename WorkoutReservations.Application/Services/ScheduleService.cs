@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using WorkoutReservations.Application.DTOs.Schedule;
 using WorkoutReservations.Application.Services.Interfaces;
 using WorkoutReservations.Infrastructure.Database;
 
@@ -11,27 +12,35 @@ namespace WorkoutReservations.Application.Services
         {
             _workoutReservationsDbContext = workoutReservationsDbContext;
         }
-        public async Task<IEnumerable<string>> SchedulesByTrainerIdAsync(Guid id)
+        public async Task<IEnumerable<ScheduleDto>> SchedulesByTrainerIdAsync(Guid id)
         {
             var schedules = await _workoutReservationsDbContext
                 .Schedules
                 .Where(s => s.UserId == id)
-                .Select(s => s.Date.ToString())
+                .Select(s => new ScheduleDto
+                {
+                    Id = s.Id,
+                    Date = s.Date.ToString("dd-MM-yyyy HH:mm")
+                })
                 .ToListAsync();
 
             return schedules;
         }
 
-        public async Task<IEnumerable<string>> SchedulesByAddressAsync(Guid locationId)
+        public async Task<IEnumerable<ScheduleDto>> SchedulesByLocationIdAsync(Guid id)
         {
             var schedules = await _workoutReservationsDbContext
                 .Schedules
-                .Where(s => s.LocationId == locationId)
-                .Select(s => s.Date.ToString())
+                .Where(s => s.LocationId == id)
+                .Select(s => new ScheduleDto
+                {
+                    Id = s.Id,
+                    Date = s.Date.ToString("dd-MM-yyyy HH:mm")
+                })
                 .ToListAsync();
+
 
             return schedules;
         }
-
     }
 }

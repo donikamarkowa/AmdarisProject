@@ -13,7 +13,8 @@ namespace AmdarisProject.Controllers
         {
             _locationService = locationService;
         }
-        [HttpGet("workkout/{id}")]
+
+        [HttpGet("workout/{id}")]
         public async Task<IActionResult> GetLocationsByWorkoutId(Guid id)
         {
             try
@@ -28,7 +29,7 @@ namespace AmdarisProject.Controllers
             }
             catch (Exception)
             {
-                return BadRequest(new { Message = "Unexpected error occurred while trying to get workout by id! Please try again later!" });
+                return BadRequest(new { Message = "Unexpected error occurred while trying to get workout's locations by id! Please try again later!" });
 
             }
         }

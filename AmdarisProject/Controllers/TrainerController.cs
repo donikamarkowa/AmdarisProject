@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using WorkoutReservations.Application.DTOs.Parameters;
-using WorkoutReservations.Application.Models.Trainer;
 using WorkoutReservations.Application.Services.Interfaces;
 
 namespace AmdarisProject.Controllers
