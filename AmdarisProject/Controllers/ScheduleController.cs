@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WorkoutReservations.Application.Services;
 using WorkoutReservations.Application.Services.Interfaces;
 using WorkoutReservations.Domain.Exceptions;
 

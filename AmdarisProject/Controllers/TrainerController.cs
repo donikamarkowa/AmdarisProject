@@ -10,11 +10,9 @@ namespace AmdarisProject.Controllers
     public class TrainerController : ControllerBase
     {
         private readonly ITrainerService _trainerService;
-        private readonly IWorkoutService _workoutService;
-        public TrainerController(ITrainerService trainerService, IWorkoutService workoutService)
+        public TrainerController(ITrainerService trainerService)
         {
             _trainerService = trainerService;
-            _workoutService = workoutService;
         }
 
         [HttpGet("all")]
