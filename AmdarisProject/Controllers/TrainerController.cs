@@ -16,21 +16,12 @@ namespace AmdarisProject.Controllers
         }
 
         [HttpGet("all")]
-        public async Task<IActionResult> All([FromQuery] TrainerParameters trainerParameters)
+        public async Task<IActionResult> All([FromQuery] PaginationParameters trainerParameters)
         {
             try
             {
                 var allTrainers = await _trainerService.AllTrainersAsync(trainerParameters);
 
-                var metadata = new
-                {
-                    allTrainers.TotalCount,
-                    allTrainers.PageSize,
-                    allTrainers.HasNext,
-                    allTrainers.HasPrevious
-                };
-
-                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
                 return Ok(allTrainers);
             }
             catch (Exception)

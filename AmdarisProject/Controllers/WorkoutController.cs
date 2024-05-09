@@ -12,28 +12,21 @@ namespace AmdarisProject.Controllers
     {
         private readonly IWorkoutService _workoutService;
         private readonly IWorkoutCategoryService _workoutCategoryService;
-        public WorkoutController(IWorkoutService workoutService, IWorkoutCategoryService workoutCategoryService)
+        private readonly ITrainerService _trainerService;
+        public WorkoutController(IWorkoutService workoutService, IWorkoutCategoryService workoutCategoryService, ITrainerService trainerService)
         {
             _workoutService = workoutService;
             _workoutCategoryService = workoutCategoryService;
+            _trainerService = trainerService;
         }
 
         [HttpGet("all")]
-        public async Task<IActionResult> All([FromQuery] WorkoutPatrameters workoutParameters)
+        public async Task<IActionResult> All([FromQuery] PaginationParameters workoutParameters)
         {
             try
             {
                 var allWorkouts = await _workoutService.AllWorkoutsAsync(workoutParameters);
 
-                var metadata = new
-                {
-                    allWorkouts.TotalCount,
-                    allWorkouts.PageSize,
-                    allWorkouts.HasNext,
-                    allWorkouts.HasPrevious
-                };
-
-                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
 
                 return Ok(allWorkouts);
             }
@@ -66,7 +59,6 @@ namespace AmdarisProject.Controllers
             catch (Exception)
             {
                 return BadRequest(new { Message = "Unexpected error occurred while trying to get workout by id! Please try again later!" });
-
             }
         }
 
@@ -107,7 +99,7 @@ namespace AmdarisProject.Controllers
                     throw new NotFoundException("No workouts found for the specified category.");
                 }
 
-                var workoutsByCategory = await _workoutService.WorkoutsByCategory(id);
+                var workoutsByCategory = await _workoutService.WorkoutsByCategoryAsync(id);
                 return Ok(workoutsByCategory);
             }
             catch (NotFoundException ex)
@@ -117,6 +109,31 @@ namespace AmdarisProject.Controllers
             catch (Exception)
             {
                 return BadRequest(new { Message = "Unexpected error occurred while trying to search workouts by given category! Please try again later!" });
+            }
+        }
+
+        [HttpGet("searchByTrainer")]
+        public async Task<IActionResult> SearchByTrainer(Guid id)
+        {
+            try
+            {
+                var trainer = await _trainerService.ExistsByIdAsync(id);
+
+                if (!trainer)
+                {
+                    throw new NotFoundException($"Trainer with {id} not found.");
+                }
+
+                var workoutsByTrainer = await _workoutService.WorkoutsByTrainerIdAsync(id);
+                return Ok(workoutsByTrainer);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { ex.Message });
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { Message = "Unexpected error occurred while trying to search workouts by given trainer! Please try again later!" });
             }
         }
     }
