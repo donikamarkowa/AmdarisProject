@@ -1,6 +1,6 @@
 ﻿namespace WorkoutReservations.Application.DTOs.Parameters
 {
-    public abstract class PaginationParameters
+    public class PaginationParameters
     {
         private const int maxPageSize = 12;
         public int PageNumber { get; set; } = 1;
