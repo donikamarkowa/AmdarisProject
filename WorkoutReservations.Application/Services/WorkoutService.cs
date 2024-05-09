@@ -1,49 +1,45 @@
-﻿using Microsoft.EntityFrameworkCore;
-using WorkoutReservations.Application.DTOs.Parameters;
+﻿using WorkoutReservations.Application.DTOs.Parameters;
 using WorkoutReservations.Application.Models.Workout;
 using WorkoutReservations.Application.Services.Interfaces;
 using WorkoutReservations.Domain.Entities;
 using WorkoutReservations.Infrastructure.Database;
+using WorkoutReservations.Infrastructure.Repositories;
 
 namespace WorkoutReservations.Application.Services
 {
     public class WorkoutService : IWorkoutService
     {
-        private readonly WorkoutReservationsDbContext _workoutReservationsDbContext;
-        public WorkoutService(WorkoutReservationsDbContext workoutReservationsDbContext)
+        private readonly IGenericRepository<Workout, WorkoutReservationsDbContext> _workoutRepository;
+
+        public WorkoutService(IGenericRepository<Workout, WorkoutReservationsDbContext> workoutRepository)
         {
-            _workoutReservationsDbContext = workoutReservationsDbContext;
+            _workoutRepository = workoutRepository;
         }
 
         public async Task<bool> ExistsByIdAsync(Guid id)
         {
-            return await this._workoutReservationsDbContext
-                .Workouts
-                .AnyAsync(w => w.Id == id);
+            return await _workoutRepository.GetById(id) != null;
         }
 
-        public async Task<PaginatedList<AllWorkoutsDto>> AllWorkoutsAsync(WorkoutPatrameters workoutPatrameters)
+        public async Task<PaginatedList<AllWorkoutsDto>> AllWorkoutsAsync(PaginationParameters workoutPatrameters)
         {
-            var allWorkouts = await this._workoutReservationsDbContext
-                .Workouts
+            var allWorkouts = await _workoutRepository.GetAll();
+            var mappedWorkouts = allWorkouts
                 .Select(w => new AllWorkoutsDto
                 {
                     Id = w.Id.ToString(),
                     Title = w.Title,
                     Picture = w.Picture
                 })
-                .ToListAsync();
+                .ToList();
+         
+            return PaginatedList<AllWorkoutsDto>.ToPagedList(mappedWorkouts, workoutPatrameters.PageNumber, workoutPatrameters.PageSize);
 
-            return PaginatedList<AllWorkoutsDto>.ToPagedList(allWorkouts, workoutPatrameters.PageNumber, workoutPatrameters.PageSize);
         }
 
         public async Task<WorkoutDetailsDto> WorkoutDetailsByIdAsync(Guid id)
         {
-            var workout = await this._workoutReservationsDbContext
-                .Workouts
-                .Include(w => w.WorkoutCategory)
-                .Include(workout => workout.Locations)
-                .FirstAsync(w => w.Id == id);
+            var workout = await _workoutRepository.GetByWithInclude(predicate: w => w.Id == id, includeProperties: w => w.WorkoutCategory);
 
             WorkoutDetailsDto workoutDto = new WorkoutDetailsDto()
             {
@@ -57,65 +53,56 @@ namespace WorkoutReservations.Application.Services
                 Status = workout.Status,
                 Picture = workout.Picture,
                 Price = workout.Price.ToString(),
-                WorkoutCategory = workout.WorkoutCategory.ToString()!
+                WorkoutCategory = workout.WorkoutCategory.Name
             };
 
             return workoutDto;
         }
         public async Task<IEnumerable<AllWorkoutsDto>> SearchWorkoutByCriteriaAsync(string criteria)
         {
-            IQueryable<Workout> query = _workoutReservationsDbContext.Workouts;
+            var allWorkouts = await _workoutRepository.GetAllBy(predicate: w => w.Title.Contains(criteria));   
 
-            if (!string.IsNullOrEmpty(criteria))
-            {
-                query = query.Where(w => w.Title.Contains(criteria));
-
-            }
-
-            var workouts = await query
+            var workouts = allWorkouts
                 .Select(w => new AllWorkoutsDto
                 {
                     Id = w.Id.ToString(),
                     Title = w.Title,
                     Picture = w.Picture
                 })
-                .ToListAsync();
+                .ToList();
 
             return workouts;
         }
 
-        public async Task<IEnumerable<AllWorkoutsDto>> WorkoutsByCategory(Guid categoryId)
+        public async Task<IEnumerable<AllWorkoutsDto>> WorkoutsByCategoryAsync(Guid categoryId)
         {
-            var workouts = await _workoutReservationsDbContext
-                .Workouts
-                .Where(w => w.WorkoutCategory.Id == categoryId)
-                .ToListAsync();
+            var workouts = await _workoutRepository.GetAllBy(predicate: w => w.WorkoutCategoryId == categoryId);
 
             var workoutsByCategory = workouts
-                .Select(workout => new AllWorkoutsDto
+                .Select(w => new AllWorkoutsDto
                 {
-                    Id = workout.Id.ToString(),
-                    Title = workout.Title,
-                    Picture = workout.Picture
+                    Id = w.Id.ToString(),
+                    Title = w.Title,
+                    Picture = w.Picture
                 });
 
             return workoutsByCategory;
         }
 
-        public async Task<IEnumerable<AllWorkoutsDto>> WorkoutsByTrainerIdAsync(Guid id)
+        public async Task<IEnumerable<AllWorkoutsDto>> WorkoutsByTrainerIdAsync(Guid trainerId)
         {
-            var workouts = await _workoutReservationsDbContext
-                .Workouts
-                .Where(w => w.Trainers.Any(t => t.Id == id))
+            var allWorkouts = await _workoutRepository.GetAllBy(predicate: w => w.Trainers.Any(t => t.Id == trainerId));
+
+            var workoutsByTrainer = allWorkouts
                 .Select(w => new AllWorkoutsDto
                 {
                     Id = w.Id.ToString(),
                     Title = w.Title,
                     Picture = w.Picture
                 })
-                .ToListAsync();
+                .ToList();
 
-            return workouts;
+            return workoutsByTrainer;
         }
 
 

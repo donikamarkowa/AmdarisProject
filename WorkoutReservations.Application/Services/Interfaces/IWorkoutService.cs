@@ -5,11 +5,11 @@ namespace WorkoutReservations.Application.Services.Interfaces
 {
     public interface IWorkoutService
     {
-        public Task<PaginatedList<AllWorkoutsDto>> AllWorkoutsAsync(WorkoutPatrameters workoutPatrameters);
+        public Task<PaginatedList<AllWorkoutsDto>> AllWorkoutsAsync(PaginationParameters workoutPatrameters);
         public Task<WorkoutDetailsDto> WorkoutDetailsByIdAsync(Guid id);
         public Task<bool> ExistsByIdAsync(Guid id);
         public Task<IEnumerable<AllWorkoutsDto>> SearchWorkoutByCriteriaAsync(string criteria);
         public Task<IEnumerable<AllWorkoutsDto>> WorkoutsByTrainerIdAsync(Guid id);
-        public Task<IEnumerable<AllWorkoutsDto>> WorkoutsByCategory(Guid categoryId);
+        public Task<IEnumerable<AllWorkoutsDto>> WorkoutsByCategoryAsync(Guid categoryId);
     }
 }
