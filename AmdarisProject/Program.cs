@@ -6,6 +6,7 @@ using WorkoutReservations.Application.Services;
 using WorkoutReservations.Application.Services.Interfaces;
 using WorkoutReservations.Domain.Entities;
 using WorkoutReservations.Infrastructure.Database;
+using WorkoutReservations.Infrastructure.Repositories;
 
 
 namespace AmdarisProject
@@ -26,12 +27,13 @@ namespace AmdarisProject
 
 
             //builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
             builder.Services.AddScoped<IWorkoutService, WorkoutService>();
             builder.Services.AddScoped<ITrainerService, TrainerService>();
             builder.Services.AddScoped<ILocationService, LocationService>();
             builder.Services.AddScoped<IScheduleService, ScheduleService>();
             builder.Services.AddScoped<IBookingService, BookingService>();
-            builder.Services.AddScoped<IWorkoutCategoryService, WorkoutCategoryService>();  
+            builder.Services.AddScoped<IWorkoutCategoryService, WorkoutCategoryService>();
 
             // Add services to the container.
 
