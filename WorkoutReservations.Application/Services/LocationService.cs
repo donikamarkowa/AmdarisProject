@@ -1,27 +1,25 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WorkoutReservations.Application.DTOs.Location;
 using WorkoutReservations.Application.Services.Interfaces;
+using WorkoutReservations.Domain.Entities;
 using WorkoutReservations.Infrastructure.Database;
+using WorkoutReservations.Infrastructure.Repositories;
 
 namespace WorkoutReservations.Application.Services
 {
     public class LocationService : ILocationService
     {
-        private readonly WorkoutReservationsDbContext _workoutReservationsDbContext;
-        public LocationService(WorkoutReservationsDbContext workoutReservationsDbContext)
+        private readonly GenericRepository<Location, WorkoutReservationsDbContext> _locationRepository;
+        public LocationService(GenericRepository<Location, WorkoutReservationsDbContext> locationRepository)
         {
-            _workoutReservationsDbContext = workoutReservationsDbContext;
+            _locationRepository = locationRepository;
         }
 
         public async Task<IEnumerable<string>> AddressesByCityAsync(string city)
         {
-            var addressess = await _workoutReservationsDbContext
-                .Locations
-                .Where(l => l.City == city)
-                .Select(c => c.Address)
-                .ToListAsync();
+            var addresses = await _locationRepository.GetPropertyValuesAsync(l => l.Address, l => l.City == city);
 
-            return addressess;
+            return addresses.ToList();
         }
 
         public async Task<bool> AddressHasSchedulesByLocationIdAsync(Guid id)
@@ -31,10 +29,8 @@ namespace WorkoutReservations.Application.Services
 
         public async Task<IEnumerable<string>> CitiesByWorkoutIdAsync(Guid workoutId)
         {
-            var cities = await _workoutReservationsDbContext
-                .Workouts
-                .Where(w => w.Id == workoutId)
-                .SelectMany(w => w.Locations)
+            var cities = await _locationRepository
+                .GetAllBy(l => l.Workouts.Any(w => w.Id == workoutId)
                 .Select(l => l.City)
                 .Distinct()
                 .ToListAsync();

@@ -76,6 +76,14 @@ namespace WorkoutReservations.Infrastructure.Repositories
             return await _set.AnyAsync(predicate);
         }
 
+        public async Task<IEnumerable<string>> GetPropertyValuesAsync(Expression<Func<TEntity, >> propertySelector, Expression<Func<TEntity, bool>> propertyPredicate)
+        {
+            return await _set
+                .Where(propertyPredicate)
+                .Select(propertySelector)
+                 .ToListAsync();
+        }
+
 
         #region private methods
         private IQueryable<TEntity> IncludeProperties(params Expression<Func<TEntity, object>>[] includeProperties)
