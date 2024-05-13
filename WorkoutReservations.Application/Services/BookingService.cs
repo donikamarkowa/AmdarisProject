@@ -1,29 +1,26 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WorkoutReservations.Application.Models.Booking;
 using WorkoutReservations.Application.Services.Interfaces;
+using WorkoutReservations.Domain.Entities;
 using WorkoutReservations.Infrastructure.Database;
+using WorkoutReservations.Infrastructure.Repositories;
 
 namespace WorkoutReservations.Application.Services
 {
     public class BookingService : IBookingService
     {
-        private readonly WorkoutReservationsDbContext _workoutReservationsDbContext;
-        public BookingService(WorkoutReservationsDbContext workoutReservationsDbContext)
+        private readonly IGenericRepository<Booking, WorkoutReservationsDbContext> _bookingRepository;
+        public BookingService(IGenericRepository<Booking, WorkoutReservationsDbContext> bookingRepository)
         {
-            _workoutReservationsDbContext = workoutReservationsDbContext;
+            _bookingRepository = bookingRepository;
         }
 
         public async Task<BookingDetailsDto> BookingDetailsAsync(Guid id)
         {
-            var booking = await _workoutReservationsDbContext
-                .Bookings
-                .Include(b => b.Workout)  
-                .ThenInclude(w => w.Trainers)
-                .Include(b => b.Workout)  
-                .ThenInclude(w => w.Locations)
-                .FirstOrDefaultAsync(b => b.Id == id);
+            var booking = await _bookingRepository
+                .GetByWithInclude(b => b.Id == id, b => b.Workout.Trainers, b => b.Workout.Locations);
 
-            var trainer = booking!.Workout.Trainers.FirstOrDefault();
+            var trainer = booking.Workout.Trainers.FirstOrDefault();
             var location = booking.Workout.Locations.FirstOrDefault();
 
             var dto = new BookingDetailsDto
@@ -41,9 +38,8 @@ namespace WorkoutReservations.Application.Services
 
         public async Task<bool> ExistsByIdAsync(Guid id)
         {
-            return await _workoutReservationsDbContext
-                .Bookings
-                .AnyAsync(b => b.Id == id);
+            return await _bookingRepository.GetById(id) != null;
+
         }
     }
 }

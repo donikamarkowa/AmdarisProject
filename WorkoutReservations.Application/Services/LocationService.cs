@@ -1,61 +1,30 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using WorkoutReservations.Application.DTOs.Location;
 using WorkoutReservations.Application.Services.Interfaces;
+using WorkoutReservations.Domain.Entities;
 using WorkoutReservations.Infrastructure.Database;
+using WorkoutReservations.Infrastructure.Repositories;
 
 namespace WorkoutReservations.Application.Services
 {
     public class LocationService : ILocationService
     {
-        private readonly WorkoutReservationsDbContext _workoutReservationsDbContext;
-        public LocationService(WorkoutReservationsDbContext workoutReservationsDbContext)
+        private readonly IGenericRepository<Location, WorkoutReservationsDbContext> _locationRepository;
+        public LocationService(IGenericRepository<Location, WorkoutReservationsDbContext> locationRepository)
         {
-            _workoutReservationsDbContext = workoutReservationsDbContext;
+            _locationRepository = locationRepository;
         }
 
-        public async Task<IEnumerable<string>> AddressesByCityAsync(string city)
+        public async Task<IEnumerable<LocationDto>> LocationsByWorkoutIdAsync(Guid workoutId)
         {
-            var addressess = await _workoutReservationsDbContext
-                .Locations
-                .Where(l => l.City == city)
-                .Select(c => c.Address)
-                .ToListAsync();
+            var locations = await _locationRepository
+                .GetPropertyValuesWithIncludeAsync(
+                selector: l => l.Id.ToString(),
+                predicate: l => l.Workouts.Any(w => w.Id == workoutId),
+                includeProperties: l => new { l.Address, l.City }
+            );
 
-            return addressess;
-        }
-
-        public async Task<bool> AddressHasSchedulesByLocationIdAsync(Guid id)
-        {
-            return await _workoutReservationsDbContext.Schedules.AnyAsync(s => s.LocationId == id);
-        }
-
-        public async Task<IEnumerable<string>> CitiesByWorkoutIdAsync(Guid workoutId)
-        {
-            var cities = await _workoutReservationsDbContext
-                .Workouts
-                .Where(w => w.Id == workoutId)
-                .SelectMany(w => w.Locations)
-                .Select(l => l.City)
-                .Distinct()
-                .ToListAsync();
-
-            return cities;
-        }
-
-        public async Task<IEnumerable<LocationDto>> LocationsByWorkoutIdAsync(Guid Id)
-        {
-            var locations = await _workoutReservationsDbContext
-                .Locations
-                .Where(l => l.Workouts.Any(w => w.Id == Id))
-                .Select(l => new LocationDto
-                {
-                    Id = l.Id,
-                    City = l.City,
-                    Address = l.Address
-                })
-                .ToListAsync();
-
-            return locations;
+            return (IEnumerable<LocationDto>)locations;
         }
     }
 }

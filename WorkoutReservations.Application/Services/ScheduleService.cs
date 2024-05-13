@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using WorkoutReservations.Application.DTOs.Schedule;
+﻿using WorkoutReservations.Application.DTOs.Schedule;
 using WorkoutReservations.Application.Services.Interfaces;
 using WorkoutReservations.Domain.Entities;
 using WorkoutReservations.Infrastructure.Database;
@@ -9,8 +8,8 @@ namespace WorkoutReservations.Application.Services
 {
     public class ScheduleService : IScheduleService
     {
-        private readonly GenericRepository<Schedule, WorkoutReservationsDbContext> _scheduleRepository;
-        public ScheduleService(GenericRepository<Schedule, WorkoutReservationsDbContext> scheduleRepository)
+        private readonly IGenericRepository<Schedule, WorkoutReservationsDbContext> _scheduleRepository;
+        public ScheduleService(IGenericRepository<Schedule, WorkoutReservationsDbContext> scheduleRepository)
         {
             _scheduleRepository = scheduleRepository;
         }
