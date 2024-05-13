@@ -41,27 +41,20 @@ namespace WorkoutReservations.Infrastructure.Repositories
             return await _set.ToListAsync();
         }
 
-        public async Task<IEnumerable<TEntity>> GetAllWithInclude(params Expression<Func<TEntity, object>>[] includeProperties)
-        {
-            var query = IncludeProperties(includeProperties);
-            return await query.ToListAsync();
-        }
         public Task<TEntity> GetByWithInclude(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includeProperties)
         {
             var query = IncludeProperties(includeProperties).Where(predicate);
             return query.FirstOrDefaultAsync()!;
         }
 
-
         public async Task<IEnumerable<TEntity>> GetAllBy(Expression<Func<TEntity, bool>> predicate)
         {
             return await _set.Where(predicate).ToListAsync();
         }
-        public async Task<TEntity> GetById(Guid id)
+        public async Task<TEntity?> GetById(Guid id)
         {
             return await _set.FindAsync(id);
         }
-
         public void Update(TEntity entity)
         {
             if (entity == null)
@@ -74,6 +67,11 @@ namespace WorkoutReservations.Infrastructure.Repositories
         public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate)
         {
             return await _set.AnyAsync(predicate);
+        }
+        public async Task<IEnumerable<string>> GetPropertyValuesWithIncludeAsync(Expression<Func<TEntity, string>> selector, Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            var query = IncludeProperties(includeProperties).Where(predicate);
+            return await query.Select(selector).ToListAsync();
         }
 
 
