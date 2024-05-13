@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WorkoutReservations.Application.Services.Interfaces;
+using WorkoutReservations.Domain.Exceptions;
 
 namespace AmdarisProject.Controllers
 {
@@ -27,9 +28,14 @@ namespace AmdarisProject.Controllers
 
                 return Ok(bookingDetails);
             }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { ex.Message });
+            }
             catch (Exception)
             {
-                return BadRequest(new { Message = "Unexpected error occurred while trying to get booking details! Please try again later!" });
+                return BadRequest(new { Message = "Unexpected error occurred while trying to get booking's details! Please try again later!" });
+
             }
         }
     }
