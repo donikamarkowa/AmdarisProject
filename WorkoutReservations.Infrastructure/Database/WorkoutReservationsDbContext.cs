@@ -20,6 +20,11 @@ namespace WorkoutReservations.Infrastructure.Database
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder
+                .Entity<Booking>()
+                .Property(b => b.Status)
+                .HasConversion<string>();
+
+            builder
                 .Entity<Rating>()
                 .Property(r => r.Date)
                 .HasDefaultValue(DateTime.UtcNow);
