@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using WorkoutReservations.Domain.Enums;
 
 namespace WorkoutReservations.Domain.Entities
 {
@@ -7,7 +8,8 @@ namespace WorkoutReservations.Domain.Entities
         [Key]
         public Guid Id { get; set; }
 
-        //public string Status { get; set; } = null!;
+        [Required]
+        public BookingStatus Status { get; set; } 
         public Guid WorkoutId { get; set; }
         public virtual Workout Workout { get; set; } = null!;
         public Guid ScheduleId { get; set; }
