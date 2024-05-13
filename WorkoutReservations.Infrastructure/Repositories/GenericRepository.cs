@@ -51,7 +51,7 @@ namespace WorkoutReservations.Infrastructure.Repositories
         {
             return await _set.Where(predicate).ToListAsync();
         }
-        public async Task<TEntity?> GetById(Guid id)
+        public async Task<TEntity> GetById(Guid id)
         {
             return await _set.FindAsync(id);
         }
@@ -74,7 +74,7 @@ namespace WorkoutReservations.Infrastructure.Repositories
             return await query.Select(selector).ToListAsync();
         }
 
-        public async Task<IEnumerable<string>> GetPropertyValuesAsync(Expression<Func<TEntity, >> propertySelector, Expression<Func<TEntity, bool>> propertyPredicate)
+        public async Task<IEnumerable<string>> GetPropertyValuesAsync(Expression<Func<TEntity, string>> propertySelector, Expression<Func<TEntity, bool>> propertyPredicate)
         {
             return await _set
                 .Where(propertyPredicate)

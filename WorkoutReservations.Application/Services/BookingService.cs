@@ -36,20 +36,6 @@ namespace WorkoutReservations.Application.Services
             return dto;
         }
 
-        public Task Cancel(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task Confirm(Guid id)
-        {
-            var booking = await _workoutReservationsDbContext
-                .Bookings
-                .FindAsync(id);
-
-            
-        }
-
         public async Task<bool> ExistsByIdAsync(Guid id)
         {
             return await _bookingRepository.GetById(id) != null;
