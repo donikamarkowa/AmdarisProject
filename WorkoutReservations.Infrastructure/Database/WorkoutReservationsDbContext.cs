@@ -115,19 +115,22 @@ namespace WorkoutReservations.Infrastructure.Database
                  {
                      Id = Guid.Parse("5228b6f2-322a-4554-a534-e3cc61cbcc68"),
                      Name = "Admin",
-                     Description = "Administrator role with full access to system functionalities."
+                     Description = "Administrator role with full access to system functionalities.",
+                     NormalizedName = "ADMIN"
                  },
                  new Role
                  {
                      Id = Guid.Parse("eae5654b-fd83-4e58-b380-e10eb18498c1"),
                      Name = "Trainer",
-                     Description = "Trainer role responsible for creating and managing workouts, schedules, and user interactions."
+                     Description = "Trainer role responsible for creating and managing workouts, schedules, and user interactions.",
+                     NormalizedName = "TRAINER"
                  },
                  new Role
                  {
                      Id = Guid.Parse("1ce6918e-f21f-494b-aa5e-cb26a78a5b3e"),
                      Name = "Customer",
-                     Description = "Customer role for individuals interested in booking workouts and viewing schedules."
+                     Description = "Customer role for individuals interested in booking workouts and viewing schedules.",
+                     NormalizedName = "CUSTOMER"
                  });
 
             builder
