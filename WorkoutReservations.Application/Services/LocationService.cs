@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using WorkoutReservations.Application.DTOs.Location;
+﻿using WorkoutReservations.Application.DTOs.Location;
 using WorkoutReservations.Application.Services.Interfaces;
 using WorkoutReservations.Domain.Entities;
 using WorkoutReservations.Infrastructure.Database;
@@ -18,13 +17,17 @@ namespace WorkoutReservations.Application.Services
         public async Task<IEnumerable<LocationDto>> LocationsByWorkoutIdAsync(Guid workoutId)
         {
             var locations = await _locationRepository
-                .GetPropertyValuesWithIncludeAsync(
-                selector: l => l.Id.ToString(),
-                predicate: l => l.Workouts.Any(w => w.Id == workoutId),
-                includeProperties: l => new { l.Address, l.City }
-            );
+               .GetAllBy(l => l.Workouts.Any(w => w.Id == workoutId));
 
-            return (IEnumerable<LocationDto>)locations;
+            var locationDtos = locations.Select(l => new LocationDto
+            {
+                Id = l.Id,
+                City = l.City,
+                Address = l.Address
+            });
+
+            return locationDtos.ToList();
         }
+
     }
 }
