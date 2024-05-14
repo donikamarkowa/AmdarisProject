@@ -12,10 +12,10 @@ namespace WorkoutReservations.Infrastructure.Repositories
         Task<IEnumerable<TEntity>> GetAll();
         Task<IEnumerable<TEntity>> GetAllBy(Expression<Func<TEntity, bool>> predicate);
         Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate);
-        Task<IEnumerable<string>> GetPropertyValuesWithIncludeAsync(Expression<Func<TEntity, string>> selector, Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includeProperties);
         Task Add(TEntity entity);
         void Update(TEntity entity);
         void Delete(TEntity entity);
+        Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate);
     }
 
 }

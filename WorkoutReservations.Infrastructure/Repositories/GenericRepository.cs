@@ -81,6 +81,10 @@ namespace WorkoutReservations.Infrastructure.Repositories
                 .Select(propertySelector)
                  .ToListAsync();
         }
+        public async Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            return await _set .FirstOrDefaultAsync(predicate);
+        }
 
 
         #region private methods
@@ -93,6 +97,8 @@ namespace WorkoutReservations.Infrastructure.Repositories
             }
             return entities;
         }
+
+
         #endregion
     }
 
