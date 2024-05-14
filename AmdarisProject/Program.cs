@@ -1,5 +1,6 @@
 
 
+using AmdarisProject.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WorkoutReservations.Application.Services;
@@ -25,8 +26,8 @@ namespace AmdarisProject
                 .AddEntityFrameworkStores<WorkoutReservationsDbContext>()
                 .AddDefaultTokenProviders();
 
+            builder.RegisterAuthentication();
 
-            //builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
             builder.Services.AddScoped<IWorkoutService, WorkoutService>();
             builder.Services.AddScoped<ITrainerService, TrainerService>();
@@ -34,6 +35,7 @@ namespace AmdarisProject
             builder.Services.AddScoped<IScheduleService, ScheduleService>();
             builder.Services.AddScoped<IBookingService, BookingService>();
             builder.Services.AddScoped<IWorkoutCategoryService, WorkoutCategoryService>();
+            builder.Services.AddScoped<IdentityService>();
 
             // Add services to the container.
 
