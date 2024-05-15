@@ -2,6 +2,7 @@
 {
     public enum BookingStatus
     {
+        Created,
         Confirmed,
         CancelledByTrainer,
         CancelledByUser,
