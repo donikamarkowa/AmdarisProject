@@ -77,7 +77,7 @@ namespace AmdarisProject.Controllers
         {
             try
             {
-                var workoutExists = await _workoutService.ExistsByIdAsync(id);
+               var workoutExists = await _workoutService.ExistsByIdAsync(id);
                 if (!workoutExists)
                 {
                     return BadRequest("Workout does not exist.");
