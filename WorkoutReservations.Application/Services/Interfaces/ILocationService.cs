@@ -4,8 +4,10 @@ namespace WorkoutReservations.Application.Services.Interfaces
 {
     public interface ILocationService
     {
-        //public Task<IEnumerable<string>> CitiesByWorkoutIdAsync(Guid workoutId);
-        //public Task<IEnumerable<string>> AddressesByCityAsync(string city);
         public Task<IEnumerable<LocationDto>> LocationsByWorkoutIdAsync(Guid workoutId);
+        public Task<IEnumerable<string>> CitiesByWorkoutAsync(Guid workoutId);
+        public Task<IEnumerable<string>> AddressesByCityAndWorkoutAsync(Guid workoutId, string city);
+        public Task AddLocationAsync(AddLocationDto dto);
+        public Task AddWorkoutToLocationAsync(Guid locationId, Guid workoutId);
     }
 }
