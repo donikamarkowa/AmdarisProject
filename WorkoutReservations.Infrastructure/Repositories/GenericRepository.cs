@@ -86,6 +86,19 @@ namespace WorkoutReservations.Infrastructure.Repositories
             return await _set .FirstOrDefaultAsync(predicate);
         }
 
+        public async Task<int> SaveChangesAsync()
+        {
+            return await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<TResult>> GetAllByWithSelect<TResult>(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, TResult>> select)
+        {
+            return await _dbContext.Set<TEntity>()
+                .Where(predicate)
+                .Select(select)
+                .ToListAsync();
+        }
+
 
         #region private methods
         private IQueryable<TEntity> IncludeProperties(params Expression<Func<TEntity, object>>[] includeProperties)
