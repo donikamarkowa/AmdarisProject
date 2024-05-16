@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using WorkoutReservations.Application.DTOs.Location;
+﻿using WorkoutReservations.Application.DTOs.Location;
 using WorkoutReservations.Application.Services.Interfaces;
 using WorkoutReservations.Domain.Entities;
 using WorkoutReservations.Infrastructure.Database;
@@ -80,5 +79,14 @@ namespace WorkoutReservations.Application.Services
             await _locationRepository.SaveChangesAsync();
         }
 
+        public async Task<bool> ExistsByIdAsync(Guid id)
+        {
+            return await _locationRepository.GetById(id) != null;
+        }
+
+        public async Task<bool> ExistsCityByNameAsync(string cityName)
+        {
+            return await _locationRepository.AnyAsync(l => l.City == cityName);
+        }
     }
 }

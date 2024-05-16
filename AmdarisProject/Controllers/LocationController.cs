@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WorkoutReservations.Application.DTOs.Location;
 using WorkoutReservations.Application.Services.Interfaces;
+using WorkoutReservations.Domain.Entities;
 using WorkoutReservations.Domain.Exceptions;
 
 namespace AmdarisProject.Controllers
@@ -11,9 +12,11 @@ namespace AmdarisProject.Controllers
     public class LocationController : ControllerBase
     {
         private readonly ILocationService _locationService;
-        public LocationController(ILocationService locationService)
+        private readonly IWorkoutService _workoutService;
+        public LocationController(ILocationService locationService, IWorkoutService workoutService)
         {
             _locationService = locationService;
+            _workoutService = workoutService;
         }
 
         [Authorize(Roles = "Admin")]
@@ -43,6 +46,14 @@ namespace AmdarisProject.Controllers
         {
             try
             {
+                var locationExists = await _locationService.ExistsByIdAsync(locationId);
+                var workoutExists = await _workoutService.ExistsByIdAsync(workoutId);
+
+                if (!locationExists || !workoutExists)
+                {
+                    return BadRequest("Location or workout does not exist.");
+                }
+
                 await _locationService.AddWorkoutToLocationAsync(locationId, workoutId);
 
                 return Ok("Workout added to location successfully.");
@@ -66,6 +77,12 @@ namespace AmdarisProject.Controllers
         {
             try
             {
+                var workoutExists = await _workoutService.ExistsByIdAsync(id);
+                if (!workoutExists)
+                {
+                    return BadRequest("Workout does not exist.");
+                }
+
                 var locations = await _locationService.LocationsByWorkoutIdAsync(id);
 
                 return Ok(locations);
@@ -87,6 +104,13 @@ namespace AmdarisProject.Controllers
         {
             try
             {
+                var workoutExists = await _workoutService.ExistsByIdAsync(id);
+                var cityExists = await _locationService.ExistsCityByNameAsync(city);
+                if (!workoutExists || !cityExists)
+                {
+                    return BadRequest("Workout or city does not exist.");
+                }
+
                 var addresses = await _locationService.AddressesByCityAndWorkoutAsync(id, city);
                 return Ok(addresses);
             }
@@ -102,6 +126,12 @@ namespace AmdarisProject.Controllers
         {
             try
             {
+                var workoutExists = await _workoutService.ExistsByIdAsync(workoutId);
+                if (!workoutExists)
+                {
+                    return BadRequest("Workout does not exist.");
+                }
+
                 var cities = await _locationService.CitiesByWorkoutAsync(workoutId);
                 return Ok(cities);
             }
