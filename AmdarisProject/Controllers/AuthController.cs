@@ -6,7 +6,6 @@ using WorkoutReservations.Application.DTOs.Auth;
 using WorkoutReservations.Application.DTOs.User;
 using WorkoutReservations.Application.Services;
 using WorkoutReservations.Domain.Entities;
-using WorkoutReservations.Infrastructure.Database;
 
 namespace AmdarisProject.Controllers
 {
@@ -14,15 +13,12 @@ namespace AmdarisProject.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly WorkoutReservationsDbContext _workoutReservationsDbContext;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IdentityService _identityService;
-        public AuthController(WorkoutReservationsDbContext workoutReservationsDbContext, UserManager<User> userManager,
-            RoleManager<Role> roleManager, SignInManager<User> signInManager, IdentityService identityService)
+        public AuthController(UserManager<User> userManager, RoleManager<Role> roleManager, SignInManager<User> signInManager, IdentityService identityService)
         {
-            _workoutReservationsDbContext = workoutReservationsDbContext;
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
@@ -33,6 +29,7 @@ namespace AmdarisProject.Controllers
         public async Task<IActionResult> Register(RegisterUserDto registerUser)
         {
             var user = new User {
+                Id = Guid.NewGuid(),
                 Email = registerUser.Email,
                 UserName = registerUser.Email,
                 FirstName = registerUser.FirstName,
@@ -45,46 +42,19 @@ namespace AmdarisProject.Controllers
             var newClaims = new List<Claim>
             {
                 new("FirstName", registerUser.FirstName),
-                new("LastName", registerUser.LastName)
+                new("LastName", registerUser.LastName),
+                new("Id", user.Id.ToString())
             };
 
             await _userManager.AddClaimsAsync(user, newClaims);
 
-            //if (registerUser.Role.Name == "Admin")
-            //{
-            //    var searchedRole = await _roleManager.FindByNameAsync("Admin");
-            //    if (searchedRole != null)
-            //    {
-            //        searchedRole = new Role("Admin");
-            //        await _roleManager.CreateAsync(role);
-            //    }
-            //    await _userManager.AddToRoleAsync(user, "Admin");
-
-            //    newClaims.Add(new Claim(ClaimTypes.Role, "Admin"));
-            //}
-            //else
-            //{
-            //    var searchedRole = await _roleManager.FindByNameAsync("User");
-            //    if (searchedRole != null)
-            //    {
-            //        searchedRole = new Role("User");
-            //        await _roleManager.CreateAsync(searchedRole);
-            //    }
-            //    await _userManager.AddToRoleAsync(user, "User");
-
-            //    newClaims.Add(new Claim(ClaimTypes.Role, "User"));
-            //}
-
             Role role = await _roleManager.FindByIdAsync(registerUser.Role.Id);
             if (role == null)
             {
-                //role = new Role { Name = registerUser.Role.Name};
-                //await _roleManager.CreateAsync(role);
                 throw new ArgumentException($"Role with id: {registerUser.Role.Id} does not exist.");
 
             }
 
-            //await _userManager.AddToRoleAsync(user, registerUser.Role.Id!);
             await _userManager.AddToRoleAsync(user, role.Name!);
 
             var claimsIdentity = new ClaimsIdentity(new Claim[]
