@@ -65,7 +65,8 @@ namespace AmdarisProject.Controllers
             }
             catch (Exception)
             {
-                return BadRequest("Failed to add workout.");
+                return BadRequest(new { Message = "Unexpected error occurred while trying to get add workout to the location! Please try again later!" });
+
             }
         }
 
@@ -115,7 +116,7 @@ namespace AmdarisProject.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest($"Failed to retrieve addresses: {ex.Message}");
+                return BadRequest(new { Message = "Unexpected error occurred while trying to get addresses by city and workout! Please try again later!" });
             }
         }
 
@@ -134,9 +135,9 @@ namespace AmdarisProject.Controllers
                 var cities = await _locationService.CitiesByWorkoutAsync(workoutId);
                 return Ok(cities);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest($"Failed to retrieve cities: {ex.Message}");
+                return BadRequest(new { Message = "Unexpected error occurred while trying to get cities by workouts! Please try again later!" });
             }
         }
     }
