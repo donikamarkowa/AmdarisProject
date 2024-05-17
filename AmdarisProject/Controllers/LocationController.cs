@@ -114,7 +114,7 @@ namespace AmdarisProject.Controllers
                 var addresses = await _locationService.AddressesByCityAndWorkoutAsync(id, city);
                 return Ok(addresses);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return BadRequest(new { Message = "Unexpected error occurred while trying to get addresses by city and workout! Please try again later!" });
             }
