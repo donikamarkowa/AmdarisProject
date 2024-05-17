@@ -26,6 +26,16 @@ namespace WorkoutReservations.Application.Services
             await _workoutCategoryRepository.SaveChangesAsync();
         }
 
+        public async Task EditCategoryAsyn(Guid id, EditWorkoutCategoryDto dto)
+        {
+            var category = await _workoutCategoryRepository.GetById(id);
+
+            category.Name = dto.Name;   
+            
+            _workoutCategoryRepository.Edit(category);
+            await _workoutCategoryRepository.SaveChangesAsync();
+        }
+
         public async Task<bool> ExistsByIdAsync(Guid id)
         {
             return await _workoutCategoryRepository.GetById(id) != null;

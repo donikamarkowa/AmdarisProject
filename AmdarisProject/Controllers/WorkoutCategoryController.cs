@@ -36,5 +36,26 @@ namespace AmdarisProject.Controllers
                 return BadRequest("Failed to add workout.");
             }
         }
+
+        [HttpPost("edit")]
+        public async Task<IActionResult> Edit([FromBody] EditWorkoutCategoryDto dto, Guid id)
+        {
+            try
+            {
+                await _workoutCategoryService.EditCategoryAsyn(id, dto);
+
+                return Ok("Category edited successfully.");
+
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                // 403 Forbidden if the user is not authorized
+                return StatusCode(403, ex.Message);
+            }
+            catch (Exception)
+            {
+                return BadRequest("Failed to add workout.");
+            }
+        }
     }
 }
