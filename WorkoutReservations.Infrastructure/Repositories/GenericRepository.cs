@@ -55,7 +55,7 @@ namespace WorkoutReservations.Infrastructure.Repositories
         {
             return await _set.FindAsync(id);
         }
-        public void Update(TEntity entity)
+        public void Edit(TEntity entity)
         {
             if (entity == null)
             {
