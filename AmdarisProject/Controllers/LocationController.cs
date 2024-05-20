@@ -12,6 +12,7 @@ namespace AmdarisProject.Controllers
     {
         private readonly ILocationService _locationService;
         private readonly IWorkoutService _workoutService;
+
         public LocationController(ILocationService locationService, IWorkoutService workoutService)
         {
             _locationService = locationService;
@@ -39,40 +40,8 @@ namespace AmdarisProject.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
-        [HttpPost("add-workout")]
-        public async Task<IActionResult> AddWorkout(Guid locationId, Guid workoutId)
-        {
-            try
-            {
-                var locationExists = await _locationService.ExistsByIdAsync(locationId);
-                var workoutExists = await _workoutService.ExistsByIdAsync(workoutId);
-
-                if (!locationExists || !workoutExists)
-                {
-                    return BadRequest("Location or workout does not exist.");
-                }
-
-                await _locationService.AddWorkoutToLocationAsync(locationId, workoutId);
-
-                return Ok("Workout added to location successfully.");
-
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                // 403 Forbidden if the user is not authorized
-                return StatusCode(403, ex.Message);
-            }
-            catch (Exception)
-            {
-                return BadRequest(new { Message = "Unexpected error occurred while trying to get add workout to the location! Please try again later!" });
-
-            }
-        }
-
-
         [Authorize(Roles = "Customer")]
-        [HttpGet("workout/{id}")]
+        [HttpGet("workout")]
         public async Task<IActionResult> LocationsByWorkout(Guid id)
         {
             try
@@ -99,7 +68,7 @@ namespace AmdarisProject.Controllers
         }
 
         [Authorize(Roles = "Customer")]
-        [HttpGet("addresses/{id}/{city}")]
+        [HttpGet("addresses")]
         public async Task<IActionResult> GetAddressesByCityAndWorkout(Guid id, string city)
         {
             try
@@ -121,7 +90,7 @@ namespace AmdarisProject.Controllers
         }
 
         [Authorize(Roles = "Customer")]
-        [HttpGet("cities/{workoutId}")]
+        [HttpGet("cities")]
         public async Task<IActionResult> GetCitiesByWorkout(Guid workoutId)
         {
             try
