@@ -1,7 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using WorkoutReservations.Application.DTOs.Parameters;
+﻿using WorkoutReservations.Application.DTOs.Parameters;
 using WorkoutReservations.Application.Models.Trainer;
-using WorkoutReservations.Application.Models.Workout;
 using WorkoutReservations.Application.Services.Interfaces;
 using WorkoutReservations.Domain.Entities;
 using WorkoutReservations.Infrastructure.Database;
@@ -92,6 +90,12 @@ namespace WorkoutReservations.Application.Services
             .Select(t => t.FirstName + " " + t.LastName);
 
             return trainerNames.ToList();
+        }
+
+        public async Task<IEnumerable<string>> TrainersByLocationIdAsync(Guid id)
+        {
+            return await _trainerRepository
+                .GetAllByWithSelect(t => t.Locations!.Any(l => l.Id == id), t => $"{t.FirstName} {t.LastName}");
         }
     }
 }

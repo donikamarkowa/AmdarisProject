@@ -11,6 +11,7 @@ namespace WorkoutReservations.Application.Services.Interfaces
         public Task<bool> ExistsByIdAsync(Guid id);
         public Task<bool> HasWorkoutsAsync(Guid id);
         public Task<IEnumerable<AllTrainersDto>> SearchTrainersByCriteria(string criteria);
+        public Task<IEnumerable<string>> TrainersByLocationIdAsync(Guid id);
 
     }
 }
