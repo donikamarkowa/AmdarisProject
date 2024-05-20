@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using WorkoutReservations.Domain.Entities;
+using WorkoutReservations.Domain.Enums;
 
 
 namespace WorkoutReservations.Infrastructure.Database
@@ -22,6 +23,11 @@ namespace WorkoutReservations.Infrastructure.Database
             builder
                 .Entity<Booking>()
                 .Property(b => b.Status)
+                .HasConversion<string>();
+
+            builder
+                .Entity<Workout>()
+                .Property(w => w.Status)
                 .HasConversion<string>();
 
             builder
@@ -208,7 +214,7 @@ namespace WorkoutReservations.Infrastructure.Database
                     Duration = TimeSpan.FromMinutes(60),
                     Gender = "All",
                     IntensityLevel = 5,
-                    Status = "Active",
+                    Status = WorkoutStatus.Active,
                     Picture = "https://media.istockphoto.com/id/1149241593/photo/man-doing-cross-training-exercise-with-rope.jpg?s=1024x1024&w=is&k=20&c=La_Z7H2yY9DTOcJnWDQDh6K6HIjPw6eWkfEIiXquTdw=",
                     RecommendedFrequency = "3 times per week",
                     Price = 10m,
@@ -223,7 +229,7 @@ namespace WorkoutReservations.Infrastructure.Database
                     Duration = TimeSpan.FromMinutes(45),
                     Gender = "Female",
                     IntensityLevel = 4,
-                    Status = "Active",
+                    Status = WorkoutStatus.Active,
                     Picture = "https://media.istockphoto.com/id/841069776/photo/happy-people-in-an-aerobics-class-at-the-gym.jpg?s=612x612&w=0&k=20&c=Msbb_TNBDZWWZfnuaZubcgE7Qa-qimYrl4D3aFQv9PY=",
                     RecommendedFrequency = "5 times per week",
                     Price = 8m,

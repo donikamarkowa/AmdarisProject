@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using WorkoutReservations.Domain.Enums;
 
 namespace WorkoutReservations.Domain.Entities
 {
@@ -24,7 +25,7 @@ namespace WorkoutReservations.Domain.Entities
         public int IntensityLevel { get; set; }
 
         [Required]
-        public string Status { get; set; } = null!;
+        public WorkoutStatus Status { get; set; } 
 
         [Required]
         public string Picture { get; set; } = null!;

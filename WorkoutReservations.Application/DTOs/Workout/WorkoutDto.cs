@@ -1,4 +1,6 @@
-﻿namespace WorkoutReservations.Application.DTOs.Workout
+﻿using WorkoutReservations.Domain.Enums;
+
+namespace WorkoutReservations.Application.DTOs.Workout
 {
     public class WorkoutDto
     {
@@ -9,7 +11,7 @@
         public string Duration { get; set; } = null!;
         public string Gender { get; set; } = null!;
         public int IntensityLevel { get; set; } 
-        public string Status { get; set; } = null!;
+        public WorkoutStatus Status { get; set; } 
         public string Picture { get; set; } = null!;
         public string Price { get; set; } = null!;
         public string RecommendedFrequency { get; set; } = null!;
