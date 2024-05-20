@@ -42,7 +42,7 @@ namespace WorkoutReservations.Application.Services
             await _scheduleRepository.SaveChangesAsync();
         }
 
-        public async Task<bool> ExistsByLocationId(Guid locationId, string date)
+        public async Task<bool> ExistsByLocationIdAsync(Guid locationId, string date)
         {
             bool scheduleExists = await _scheduleRepository.AnyAsync(
               s => s.LocationId == locationId && s.Date == DateTime.Parse(date));
@@ -83,6 +83,18 @@ namespace WorkoutReservations.Application.Services
         {
             var location = await _locationRepository.GetById(locationId);
             return capacity <= location.MaxCapacity;
+        }
+
+        public async Task<bool> HasCapacityAsync(Guid id)
+        {
+            var schedule = await _scheduleRepository.GetById(id);
+
+            if (schedule.Capacity <= 0)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
