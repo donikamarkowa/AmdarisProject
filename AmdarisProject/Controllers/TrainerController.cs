@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WorkoutReservations.Application.DTOs.Parameters;
 using WorkoutReservations.Application.Services.Interfaces;
+using WorkoutReservations.Domain.Exceptions;
 
 namespace AmdarisProject.Controllers
 {
@@ -10,9 +11,11 @@ namespace AmdarisProject.Controllers
     public class TrainerController : ControllerBase
     {
         private readonly ITrainerService _trainerService;
-        public TrainerController(ITrainerService trainerService)
+        private readonly ILocationService _locationService;
+        public TrainerController(ITrainerService trainerService, ILocationService locationService)
         {
             _trainerService = trainerService;
+            _locationService = locationService;
         }
 
         [HttpGet("all")]
@@ -30,7 +33,7 @@ namespace AmdarisProject.Controllers
             }
         }
 
-        [HttpGet("{id}/details")]
+        [HttpGet("details")]
         public async Task<IActionResult> Details(Guid id)
         {
 
@@ -78,6 +81,33 @@ namespace AmdarisProject.Controllers
             catch (Exception)
             {
                 return BadRequest(new { Message = "An unexpected error occurred while searching for trainers. Please try again later." });
+            }
+        }
+
+        [Authorize(Roles = "Customer")]
+        [HttpGet("location")]
+        public async Task<IActionResult> TrainersByLocation(Guid id)
+        {
+            try
+            {
+                var locationExists = await _locationService.ExistsByIdAsync(id);
+                if (!locationExists)
+                {
+                    return BadRequest("Location does not exist.");
+                }
+
+                var trainers = await _trainerService.TrainersByLocationIdAsync(id);
+
+                return Ok(trainers);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { ex.Message });
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { Message = "Unexpected error occurred while trying to get workout's locations by id! Please try again later!" });
+
             }
         }
 
