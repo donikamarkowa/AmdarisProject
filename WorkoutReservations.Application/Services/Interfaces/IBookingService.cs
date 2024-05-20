@@ -6,5 +6,6 @@ namespace WorkoutReservations.Application.Services.Interfaces
     {
         public Task<bool> ExistsByIdAsync(Guid id);
         public Task<BookingDetailsDto> BookingDetailsAsync(Guid id);
+        public Task AddBookingAsync(Guid workoutId, Guid scheduleId);
     }
 }
