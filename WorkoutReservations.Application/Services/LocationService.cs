@@ -88,5 +88,12 @@ namespace WorkoutReservations.Application.Services
         {
             return await _locationRepository.AnyAsync(l => l.City == cityName);
         }
+
+        public async Task<bool> LocationHasWorkoutsAsync(Guid workoutId)
+        {
+            var result = await _locationRepository.AnyAsync(l => l.Workouts.Any(w => w.Id == workoutId));
+
+            return result;
+        }
     }
 }
