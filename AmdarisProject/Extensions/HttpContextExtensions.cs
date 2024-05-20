@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using WorkoutReservations.Domain.Constants;
 
 namespace AmdarisProject.Extensions
 {
@@ -6,7 +7,7 @@ namespace AmdarisProject.Extensions
     {
         public static string GetUserIdExtension(this HttpContext context)
         {
-            return context.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            return context.User.FindFirstValue(CustomClaimTypes.Id);
         }
     }
 }
