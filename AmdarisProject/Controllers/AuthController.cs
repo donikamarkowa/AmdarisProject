@@ -5,6 +5,7 @@ using System.Security.Claims;
 using WorkoutReservations.Application.DTOs.Auth;
 using WorkoutReservations.Application.DTOs.User;
 using WorkoutReservations.Application.Services;
+using WorkoutReservations.Domain.Constants;
 using WorkoutReservations.Domain.Entities;
 
 namespace AmdarisProject.Controllers
@@ -41,9 +42,9 @@ namespace AmdarisProject.Controllers
 
             var newClaims = new List<Claim>
             {
-                new("FirstName", registerUser.FirstName),
-                new("LastName", registerUser.LastName),
-                new("Id", user.Id.ToString())
+                new(CustomClaimTypes.FirstName, registerUser.FirstName),
+                new(CustomClaimTypes.LastName, registerUser.LastName),
+                new(CustomClaimTypes.Id, user.Id.ToString())
             };
 
             await _userManager.AddClaimsAsync(user, newClaims);
