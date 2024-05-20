@@ -70,6 +70,12 @@ namespace WorkoutReservations.Infrastructure.Database
                .WithMany(t => t.Workouts)
                .UsingEntity(j => j.ToTable("TrainersWorkouts"));
 
+            builder
+               .Entity<Location>()
+               .HasMany(l => l.Trainers)
+               .WithMany(t => t.Locations)
+               .UsingEntity(j => j.ToTable("TrainersLocations"));
+
 
             builder
                 .Entity<Workout>()

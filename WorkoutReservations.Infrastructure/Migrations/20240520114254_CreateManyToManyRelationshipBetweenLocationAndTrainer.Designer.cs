@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WorkoutReservations.Infrastructure.Database;
 
@@ -11,9 +12,11 @@ using WorkoutReservations.Infrastructure.Database;
 namespace WorkoutReservations.Infrastructure.Migrations
 {
     [DbContext(typeof(WorkoutReservationsDbContext))]
-    partial class WorkoutReservationsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240520114254_CreateManyToManyRelationshipBetweenLocationAndTrainer")]
+    partial class CreateManyToManyRelationshipBetweenLocationAndTrainer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +37,7 @@ namespace WorkoutReservations.Infrastructure.Migrations
 
                     b.HasIndex("TrainersId");
 
-                    b.ToTable("TrainersLocations", (string)null);
+                    b.ToTable("TrainerLocations", (string)null);
                 });
 
             modelBuilder.Entity("LocationsWorkouts", b =>
@@ -293,7 +296,7 @@ namespace WorkoutReservations.Infrastructure.Migrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 5, 20, 12, 8, 40, 918, DateTimeKind.Utc).AddTicks(9159));
+                        .HasDefaultValue(new DateTime(2024, 5, 20, 11, 42, 53, 66, DateTimeKind.Utc).AddTicks(4425));
 
                     b.Property<int>("RatingCount")
                         .HasColumnType("int");
@@ -517,7 +520,7 @@ namespace WorkoutReservations.Infrastructure.Migrations
                             AccessFailedCount = 0,
                             Age = 30,
                             Bio = "I'm a dedicated fitness professional with a passion for aerobic and strength training. With years of experience, I specialize in crafting personalized workout programs to help clients achieve their fitness goals. Whether you're aiming to improve cardiovascular health, build strength, or enhance overall fitness, I'm here to support you every step of the way. My dynamic training sessions are tailored to your needs, combining effective aerobic exercises with targeted strength training techniques. Let's work together to unlock your full potential and achieve lasting results!\r\n",
-                            ConcurrencyStamp = "e3ce31aa-8540-4a8c-b7ad-a96ecfeaae99",
+                            ConcurrencyStamp = "4af7b4ed-055c-457f-a715-0712f3c345f5",
                             Email = "alexandra.trainer@gmail.com",
                             EmailConfirmed = false,
                             FirstName = "Alexandra",
@@ -537,7 +540,7 @@ namespace WorkoutReservations.Infrastructure.Migrations
                             Id = new Guid("fa6b2fb6-0645-434e-90a9-7c9c1c9e701d"),
                             AccessFailedCount = 0,
                             Age = 23,
-                            ConcurrencyStamp = "d3d91663-9bd0-42cb-a3b5-b219a06231bc",
+                            ConcurrencyStamp = "8e913846-586e-478f-bb71-933a7867a610",
                             Email = "kalina.customer@gmail.com",
                             EmailConfirmed = false,
                             FirstName = "Kalina",

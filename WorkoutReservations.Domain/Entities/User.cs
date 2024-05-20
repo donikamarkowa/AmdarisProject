@@ -25,5 +25,6 @@ namespace WorkoutReservations.Domain.Entities
         public Guid RoleId { get; set; }
         public virtual Role Role { get; set; } = null!;
         public virtual ICollection<Workout>? Workouts { get; set; } = new List<Workout>();
+        public virtual ICollection<Location>? Locations { get; set; } = new List<Location>();
     }
 }

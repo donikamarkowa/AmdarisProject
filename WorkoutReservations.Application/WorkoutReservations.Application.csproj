@@ -7,6 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Services\AuthService.cs~RF31a690a9.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNet.Identity.Core" Version="2.2.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\WorkoutReservations.Domain\WorkoutReservations.Domain.csproj" />
     <ProjectReference Include="..\WorkoutReservations.Infrastructure\WorkoutReservations.Infrastructure.csproj" />
   </ItemGroup>
