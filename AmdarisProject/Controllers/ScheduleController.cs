@@ -82,7 +82,7 @@ namespace AmdarisProject.Controllers
 
             try
             {
-                var scheduleExists = await _scheduleService.ExistsByLocationId(locationId, dto.Date);
+                var scheduleExists = await _scheduleService.ExistsByLocationIdAsync(locationId, dto.Date);
 
                 if (scheduleExists)
                 {
