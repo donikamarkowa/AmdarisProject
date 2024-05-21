@@ -11,35 +11,18 @@ namespace WorkoutReservations.Application.Services
         private readonly IGenericRepository<Schedule, WorkoutReservationsDbContext> _scheduleRepository;
         private readonly IGenericRepository<Location, WorkoutReservationsDbContext> _locationRepository;
         private readonly IGenericRepository<User, WorkoutReservationsDbContext> _trainerRepository;
+        private readonly IGenericRepository<Workout, WorkoutReservationsDbContext> _workoutRepository;
 
 
         public ScheduleService(IGenericRepository<Schedule, WorkoutReservationsDbContext> scheduleRepository,
             IGenericRepository<Location, WorkoutReservationsDbContext> locationRepository,
-            IGenericRepository<User, WorkoutReservationsDbContext> trainerRepository)
+            IGenericRepository<User, WorkoutReservationsDbContext> trainerRepository,
+            IGenericRepository<Workout, WorkoutReservationsDbContext> workoutRepository)
         {
             _scheduleRepository = scheduleRepository;
             _locationRepository = locationRepository;
             _trainerRepository = trainerRepository;
-        }
-    
-
-        public async Task AddScheduleToLocationAsync(AddScheduleDto scheduleDto, Guid locationId, Guid trainerId)
-        {
-
-            var location = await _locationRepository.GetById(locationId);
-            var trainer = await _trainerRepository.GetById(trainerId);
-
-            var newSchedule = new Schedule
-            {
-                Id = Guid.Parse(scheduleDto.Id),
-                LocationId = locationId,
-                UserId = trainerId,
-                Capacity = scheduleDto.Capacity,
-                Date = DateTime.Parse(scheduleDto.Date)
-            };
-
-            await _scheduleRepository.Add(newSchedule);
-            await _scheduleRepository.SaveChangesAsync();
+            _workoutRepository = workoutRepository;
         }
 
         public async Task<bool> ExistsByLocationIdAsync(Guid locationId, string date)
@@ -50,35 +33,6 @@ namespace WorkoutReservations.Application.Services
             return scheduleExists;
 
         }
-
-        public async Task<IEnumerable<ScheduleDto>> SchedulesByLocationIdAsync(Guid id)
-        {
-            var schedulesByLocation = await _scheduleRepository.GetAllBy(s => s.LocationId == id);
-
-            var schedules = schedulesByLocation
-                .Select(s => new ScheduleDto
-                {
-                    Id = s.Id.ToString(),
-                    Date = s.Date.ToString("dd-MM-yyyy HH:mm")
-                });
-
-            return schedules;
-        }
-
-        public async Task<IEnumerable<ScheduleDto>> SchedulesByTrainerIdAsync(Guid id)
-        {
-            var schedulesByTrainer = await _scheduleRepository.GetAllBy(s => s.UserId == id);
-
-            var schedules = schedulesByTrainer
-                .Select(s => new ScheduleDto
-                {
-                    Id = s.Id.ToString(),
-                    Date = s.Date.ToString("dd-MM-yyyy HH:mm")
-                });
-
-            return schedules;
-        }
-
         public async Task<bool> IsCapacityValidForLocation(int capacity, Guid locationId)
         {
             var location = await _locationRepository.GetById(locationId);
@@ -95,6 +49,39 @@ namespace WorkoutReservations.Application.Services
             }
 
             return true;
+        }
+        public async Task AddScheduleToWorkoutByTrainerAsync(AddScheduleDto scheduleDto, Guid locationId, Guid workoutId, Guid trainerId)
+        {
+            var location = await  _locationRepository.GetById(locationId);
+            var workout = await _workoutRepository.GetById(workoutId);
+
+            var schedule = new Schedule
+            {
+                Id = Guid.Parse(scheduleDto.Id),
+                Date = DateTime.Parse(scheduleDto.Date),
+                Capacity = scheduleDto.Capacity,
+                LocationId = locationId,
+                WorkoutId = workoutId,
+                UserId = trainerId
+            };
+
+            await _scheduleRepository.Add(schedule);
+            await _scheduleRepository.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<ScheduleDto>> AllSchedulesByTrainerWorkoutAndLocationAsync(Guid trainerId, Guid workoutId, Guid locationId)
+        {
+            var schedules = await _scheduleRepository.GetAllBy(s =>
+                s.UserId == trainerId && s.WorkoutId == workoutId && s.LocationId == locationId && s.Date >= DateTime.Today);
+
+            // Map the schedules to ScheduleDto objects
+            var scheduleDtos = schedules.Select(s => new ScheduleDto
+            {
+                Id = s.Id.ToString(),
+                Date = s.Date.ToString("dd-MM-yyyy HH:mm"),
+            });
+
+            return scheduleDtos;
         }
     }
 }
