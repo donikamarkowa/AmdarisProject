@@ -49,7 +49,7 @@ namespace AmdarisProject.Controllers
                     return BadRequest("Location does not exist.");
                 }
 
-                var locationHasWorkout = await _locationService.LocationHasWorkoutAsync(locationId, workoutId);
+                var locationHasWorkout = await _locationService.IsLocationOfWorkoutAsync(locationId, workoutId);
                 if (!locationHasWorkout)
                 {
                     return BadRequest("The location is not associated with the specified workout.");
@@ -63,7 +63,7 @@ namespace AmdarisProject.Controllers
                 }
 
                 var trainerId = Guid.Parse(_contextAccessor.HttpContext!.GetUserIdExtension());
-                var result = await _workoutService.IsTraienrOfWorkoutAsync(trainerId, workoutId);
+                var result = await _workoutService.IsTrainerOfWorkoutAsync(trainerId, workoutId);
                 if (!result)
                 {
                     return BadRequest("The trainer is not associated with the specified workout.");
@@ -79,7 +79,6 @@ namespace AmdarisProject.Controllers
             catch (Exception)
             {
                 return BadRequest(new { Message = "Unexpected error occurred while trying to add schedule! Please try again later!" });
-
             }
         }
 
@@ -117,8 +116,7 @@ namespace AmdarisProject.Controllers
             }
             catch (Exception)
             {
-
-                throw;
+                return BadRequest(new { Message = "Unexpected error occurred while trying to get upcoming schedules! Please try again later!" });
             }
         }
     }
