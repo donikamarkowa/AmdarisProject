@@ -106,7 +106,7 @@ namespace AmdarisProject.Controllers
             }
             catch (Exception)
             {
-                return BadRequest(new { Message = "Unexpected error occurred while trying to get cities by workouts! Please try again later!" });
+                return BadRequest(new { Message = "Unexpected error occurred while trying to get cities by workout! Please try again later!" });
             }
         }
     }
