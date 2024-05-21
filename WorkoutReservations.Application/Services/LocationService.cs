@@ -89,7 +89,7 @@ namespace WorkoutReservations.Application.Services
             return await _locationRepository.AnyAsync(l => l.City == cityName);
         }
 
-        public async Task<bool> LocationHasWorkoutAsync(Guid locationId, Guid workoutId)
+        public async Task<bool> IsLocationOfWorkoutAsync(Guid locationId, Guid workoutId)
         {
             var location = await _locationRepository.GetByWithInclude(l => l.Id == locationId, l => l.Workouts);
 

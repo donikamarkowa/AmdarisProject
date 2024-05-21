@@ -11,6 +11,6 @@ namespace WorkoutReservations.Application.Services.Interfaces
         public Task AddWorkoutToLocationAsync(Guid locationId, Guid workoutId);
         public Task<bool> ExistsByIdAsync(Guid id);
         public Task<bool> ExistsCityByNameAsync(string cityName);
-        public Task<bool> LocationHasWorkoutAsync(Guid locationId, Guid workoutId);
+        public Task<bool> IsLocationOfWorkoutAsync(Guid locationId, Guid workoutId);
     }
 }
