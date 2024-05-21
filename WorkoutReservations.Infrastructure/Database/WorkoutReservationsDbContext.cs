@@ -49,6 +49,14 @@ namespace WorkoutReservations.Infrastructure.Database
                 .HasForeignKey(w => w.WorkoutCategoryId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            builder
+                .Entity<Schedule>()
+                .HasOne(s => s.Workout)
+                .WithMany(w => w.Schedules)
+                .HasForeignKey(w => w.WorkoutId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+
             //builder
             //    .Entity<Workout>()
             //    .HasMany(w => w.Tags)

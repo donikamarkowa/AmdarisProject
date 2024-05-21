@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WorkoutReservations.Infrastructure.Database;
 
@@ -11,9 +12,11 @@ using WorkoutReservations.Infrastructure.Database;
 namespace WorkoutReservations.Infrastructure.Migrations
 {
     [DbContext(typeof(WorkoutReservationsDbContext))]
-    partial class WorkoutReservationsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240521083023_AddWorkoutScheduleRelationship")]
+    partial class AddWorkoutScheduleRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
