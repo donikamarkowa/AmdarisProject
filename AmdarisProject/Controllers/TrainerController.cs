@@ -34,6 +34,7 @@ namespace AmdarisProject.Controllers
         }
 
         [HttpGet("details")]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Details(Guid id)
         {
 
