@@ -89,11 +89,11 @@ namespace WorkoutReservations.Application.Services
             return await _locationRepository.AnyAsync(l => l.City == cityName);
         }
 
-        public async Task<bool> LocationHasWorkoutsAsync(Guid workoutId)
+        public async Task<bool> LocationHasWorkoutAsync(Guid locationId, Guid workoutId)
         {
-            var result = await _locationRepository.AnyAsync(l => l.Workouts.Any(w => w.Id == workoutId));
+            var location = await _locationRepository.GetByWithInclude(l => l.Id == locationId, l => l.Workouts);
 
-            return result;
+            return location != null && location.Workouts.Any(w => w.Id == workoutId);
         }
     }
 }
