@@ -17,7 +17,7 @@ namespace AmdarisProject.Controllers
         }
 
         [HttpPost("add")]
-        public async Task<IActionResult> Add([FromBody] AddWorkoutCategoryDto dto)
+        public async Task<IActionResult> Add([FromBody] WorkoutCategoryDto dto)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace AmdarisProject.Controllers
         }
 
         [HttpPost("edit")]
-        public async Task<IActionResult> Edit([FromBody] EditWorkoutCategoryDto dto, Guid id)
+        public async Task<IActionResult> Edit([FromBody] WorkoutCategoryDto dto, Guid id)
         {
             try
             {

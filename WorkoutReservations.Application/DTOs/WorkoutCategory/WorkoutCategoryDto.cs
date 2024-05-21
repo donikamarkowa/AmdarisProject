@@ -1,6 +1,6 @@
 ﻿namespace WorkoutReservations.Application.DTOs.WorkoutCategory
 {
-    public class AddWorkoutCategoryDto
+    public class WorkoutCategoryDto
     {
         public string Name { get; set; } = null!;       
     }

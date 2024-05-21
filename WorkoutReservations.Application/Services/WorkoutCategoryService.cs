@@ -14,7 +14,7 @@ namespace WorkoutReservations.Application.Services
             _workoutCategoryRepository = workoutCategoryRepository;
         }
 
-        public async Task AddCategoryAsync(AddWorkoutCategoryDto dto)
+        public async Task AddCategoryAsync(WorkoutCategoryDto dto)
         {
             var category = new WorkoutCategory
             {
@@ -25,7 +25,7 @@ namespace WorkoutReservations.Application.Services
             await _workoutCategoryRepository.SaveChangesAsync();
         }
 
-        public async Task EditCategoryAsyn(Guid id, EditWorkoutCategoryDto dto)
+        public async Task EditCategoryAsyn(Guid id, WorkoutCategoryDto dto)
         {
             var category = await _workoutCategoryRepository.GetById(id);
 

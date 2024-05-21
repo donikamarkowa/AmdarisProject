@@ -5,7 +5,7 @@ namespace WorkoutReservations.Application.Services.Interfaces
     public interface IWorkoutCategoryService
     {
         public Task<bool> ExistsByIdAsync(Guid id);
-        public Task AddCategoryAsync(AddWorkoutCategoryDto dto);
-        public Task EditCategoryAsyn(Guid id, EditWorkoutCategoryDto dto);
+        public Task AddCategoryAsync(WorkoutCategoryDto dto);
+        public Task EditCategoryAsyn(Guid id, WorkoutCategoryDto dto);
     }
 }
