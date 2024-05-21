@@ -5,7 +5,6 @@ namespace WorkoutReservations.Application.Services.Interfaces
 {
     public interface ITrainerService
     {
-        public Task<IEnumerable<string>> TrainersByAddressAsync(string address);
         public Task<TrainerDetailsDto> TrainerDetailsAsync(Guid id);
         public Task<PaginatedList<AllTrainersDto>> AllTrainersAsync(PaginationParameters trainerParameters);
         public Task<bool> ExistsByIdAsync(Guid id);

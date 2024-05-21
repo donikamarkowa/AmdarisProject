@@ -79,19 +79,6 @@ namespace WorkoutReservations.Application.Services
             return viewModel;
         }
 
-        public async Task<IEnumerable<string>> TrainersByAddressAsync(string address)
-        {
-            var trainers = await _trainerRepository.GetAllBy
-                (predicate: t => t.Workouts!.Any(w => w.Locations.Any(l => l.Address == address)));
-
-            var trainerNames = trainers
-            .SelectMany(t => t.Workouts!)
-            .SelectMany(w => w.Trainers)
-            .Select(t => t.FirstName + " " + t.LastName);
-
-            return trainerNames.ToList();
-        }
-
         public async Task<IEnumerable<string>> TrainersByLocationIdAsync(Guid id)
         {
             return await _trainerRepository
