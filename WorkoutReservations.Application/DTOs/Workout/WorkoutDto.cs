@@ -4,7 +4,6 @@ namespace WorkoutReservations.Application.DTOs.Workout
 {
     public class WorkoutDto
     {
-        public string Id { get; set; } = null!;
         public string Title { get; set; } = null!;
         public string Description { get; set; } = null!;
         public string EquipmentNeeded { get; set; } = null!;

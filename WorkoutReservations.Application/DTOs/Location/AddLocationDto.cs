@@ -2,7 +2,6 @@
 {
     public class AddLocationDto
     {
-        public string Id { get; set; } = null!;
         public string City { get; set; } = null!;
         public string Region { get; set; } = null!;
         public string Address { get; set; } = null!;
