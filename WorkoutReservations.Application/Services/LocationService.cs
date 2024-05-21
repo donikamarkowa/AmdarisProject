@@ -21,7 +21,6 @@ namespace WorkoutReservations.Application.Services
         {
             var location = new Location
             {
-                Id = Guid.Parse(dto.Id),
                 City = dto.City,
                 Region = dto.Region,
                 Address = dto.Address,

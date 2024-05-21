@@ -18,7 +18,6 @@ namespace WorkoutReservations.Application.Services
         {
             var category = new WorkoutCategory
             {
-                Id = Guid.Parse(dto.Id),
                 Name = dto.Name
             };
 

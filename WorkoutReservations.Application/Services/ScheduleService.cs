@@ -56,8 +56,7 @@ namespace WorkoutReservations.Application.Services
             var workout = await _workoutRepository.GetById(workoutId);
 
             var schedule = new Schedule
-            {
-                Id = Guid.Parse(scheduleDto.Id),
+            { 
                 Date = DateTime.Parse(scheduleDto.Date),
                 Capacity = scheduleDto.Capacity,
                 LocationId = locationId,
