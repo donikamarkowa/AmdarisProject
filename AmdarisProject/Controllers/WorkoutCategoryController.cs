@@ -33,7 +33,7 @@ namespace AmdarisProject.Controllers
             }
             catch (Exception)
             {
-                return BadRequest("Failed to add workout.");
+                return BadRequest(new { Message = "Unexpected error occurred while trying to add new category! Please try again later!" });
             }
         }
 
@@ -54,7 +54,8 @@ namespace AmdarisProject.Controllers
             }
             catch (Exception)
             {
-                return BadRequest("Failed to add workout.");
+                return BadRequest(new { Message = "Unexpected error occurred while trying to get edit category! Please try again later!" });
+
             }
         }
     }
