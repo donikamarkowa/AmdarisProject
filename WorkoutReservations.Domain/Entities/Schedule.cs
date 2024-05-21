@@ -16,5 +16,7 @@ namespace WorkoutReservations.Domain.Entities
         public virtual User User { get; set; } = null!;
         public Guid LocationId { get; set; }
         public virtual Location Location { get; set; } = null!;
+        public Guid WorkoutId { get; set; }
+        public virtual Workout Workout { get; set; } = null!;
     }
 }

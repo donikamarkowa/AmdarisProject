@@ -39,8 +39,8 @@ namespace WorkoutReservations.Domain.Entities
         public virtual WorkoutCategory WorkoutCategory { get; set; } = null!;
 
         public virtual ICollection<User> Trainers { get; set; } = new List<User>();
-
         public virtual ICollection<Location> Locations { get; set; } = new List<Location>();
+        public virtual ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
 
         //public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
     }
