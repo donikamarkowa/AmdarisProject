@@ -2,9 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WorkoutReservations.Application.DTOs.Parameters;
-using WorkoutReservations.Application.Services;
 using WorkoutReservations.Application.Services.Interfaces;
-using WorkoutReservations.Domain.Entities;
 using WorkoutReservations.Domain.Exceptions;
 
 namespace AmdarisProject.Controllers
