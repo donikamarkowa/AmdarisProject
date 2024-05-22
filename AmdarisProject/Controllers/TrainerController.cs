@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AmdarisProject.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WorkoutReservations.Application.DTOs.Parameters;
+using WorkoutReservations.Application.Services;
 using WorkoutReservations.Application.Services.Interfaces;
+using WorkoutReservations.Domain.Entities;
 using WorkoutReservations.Domain.Exceptions;
 
 namespace AmdarisProject.Controllers
@@ -12,10 +15,12 @@ namespace AmdarisProject.Controllers
     {
         private readonly ITrainerService _trainerService;
         private readonly ILocationService _locationService;
-        public TrainerController(ITrainerService trainerService, ILocationService locationService)
+        private readonly IHttpContextAccessor _contextAccessor;
+        public TrainerController(ITrainerService trainerService, ILocationService locationService, IHttpContextAccessor contextAccessor)
         {
             _trainerService = trainerService;
             _locationService = locationService;
+            _contextAccessor = contextAccessor;
         }
 
         [HttpGet("all")]
@@ -108,6 +113,35 @@ namespace AmdarisProject.Controllers
             catch (Exception)
             {
                 return BadRequest(new { Message = "Unexpected error occurred while trying to get workout's locations by id! Please try again later!" });
+
+            }
+        }
+
+        [Authorize(Roles = "Trainer")]
+        [HttpPost("addLocation")]
+        public async Task<IActionResult> AddLocation(Guid locationId)
+        {
+            try
+            {
+                var locationExists = await _locationService.ExistsByIdAsync(locationId);
+                if (!locationExists)
+                {
+                    return BadRequest("Location does not exist.");
+                }
+
+                var trainerId = Guid.Parse(_contextAccessor.HttpContext!.GetUserIdExtension());
+                var hasLocation = await _trainerService.TrainerHasLocationAsync(trainerId, locationId);
+                if (hasLocation)
+                {
+                    return BadRequest("Trainer already has this location.");
+                }
+
+                 await _trainerService.ChooseLocationForTrainerAsync(trainerId, locationId);
+                return Ok("Location successfully added to the trainer.");
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { Message = "Unexpected error occurred while trying to add location to trainer! Please try again later!" });
 
             }
         }
