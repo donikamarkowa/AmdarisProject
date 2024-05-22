@@ -69,15 +69,6 @@ namespace WorkoutReservations.Application.Services
             return locationDtos.ToList();
         }
 
-        public async Task AddWorkoutToLocationAsync(Guid locationId, Guid workoutId)
-        {
-            var workout = await _workoutRepository.GetById(workoutId);
-            var location = await _locationRepository.GetById(locationId);
-
-            workout.Locations.Add(location);
-            await _locationRepository.SaveChangesAsync();
-        }
-
         public async Task<bool> ExistsByIdAsync(Guid id)
         {
             return await _locationRepository.GetById(id) != null;
@@ -93,6 +84,20 @@ namespace WorkoutReservations.Application.Services
             var location = await _locationRepository.GetByWithInclude(l => l.Id == locationId, l => l.Workouts);
 
             return location != null && location.Workouts.Any(w => w.Id == workoutId);
+        }
+
+        public async Task<IEnumerable<string>> GetAllCitiesAsync()
+        {
+            var cities =  await _locationRepository.GetAllByWithSelect(l => true, l => l.City);
+
+            return cities.Distinct();
+        }
+
+        public async Task<IEnumerable<string>> GetAllAddressesByCityAsync(string city)
+        {
+            var addresses = await _locationRepository.GetAllByWithSelect(l => l.City == city, l => l.Address);
+
+            return addresses.Distinct();
         }
     }
 }
