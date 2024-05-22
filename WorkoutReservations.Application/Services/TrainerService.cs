@@ -10,9 +10,12 @@ namespace WorkoutReservations.Application.Services
     public class TrainerService : ITrainerService
     {
         private readonly IGenericRepository<User, WorkoutReservationsDbContext> _trainerRepository;
-        public TrainerService(IGenericRepository<User, WorkoutReservationsDbContext> trainerRepository)
+        private readonly IGenericRepository<Location, WorkoutReservationsDbContext> _locationRepository;
+        public TrainerService(IGenericRepository<User, WorkoutReservationsDbContext> trainerRepository,
+            IGenericRepository<Location, WorkoutReservationsDbContext> locationRepository)
         {
             _trainerRepository = trainerRepository;
+            _locationRepository = locationRepository;
         }
 
         public async Task<PaginatedList<AllTrainersDto>> AllTrainersAsync(PaginationParameters trainerParameters)
@@ -30,6 +33,16 @@ namespace WorkoutReservations.Application.Services
 
             return PaginatedList<AllTrainersDto>.ToPagedList(mappedTrainers, trainerParameters.PageNumber, trainerParameters.PageSize);
 
+        }
+
+        public async Task ChooseLocationForTrainerAsync(Guid trainerId, Guid locationId)
+        {
+            var trainer = await _trainerRepository.GetById(trainerId);
+            var location = await _locationRepository.GetById(locationId);
+
+            trainer.Locations!.Add(location);
+            _trainerRepository.Edit(trainer);
+            await _trainerRepository.SaveChangesAsync();
         }
 
         public async Task<bool> ExistsByIdAsync(Guid id)
@@ -77,6 +90,11 @@ namespace WorkoutReservations.Application.Services
             };
 
             return viewModel;
+        }
+
+        public async Task<bool> TrainerHasLocationAsync(Guid trainerId, Guid locationId)
+        {
+            return await _trainerRepository.AnyAsync(t => t.Id == trainerId && t.Locations!.Any(l => l.Id == locationId));
         }
 
         public async Task<IEnumerable<string>> TrainersByLocationIdAsync(Guid id)
