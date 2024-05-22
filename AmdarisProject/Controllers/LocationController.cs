@@ -36,7 +36,43 @@ namespace AmdarisProject.Controllers
             }
             catch (Exception)
             {
-                return BadRequest("Failed to add location.");
+                return BadRequest(new { Message = "Unexpected error occurred while trying to add location! Please try again later!" });
+            }
+        }
+
+        [Authorize(Roles = "Trainer")]
+        [HttpGet("cities")]
+        public async Task<IActionResult> AllCities()
+        {
+            try
+            {
+                var cities = await _locationService.GetAllCitiesAsync();
+                return Ok(cities);
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { Message = "Unexpected error occurred while trying to get all cities! Please try again later!" });
+            }
+        }
+
+        [Authorize(Roles = "Trainer")]
+        [HttpGet("addressesByCity")]
+        public async Task<IActionResult> AllAddressesByCity(string city)
+        {
+            try
+            {
+                var cityExists = await _locationService.ExistsCityByNameAsync(city);
+                if (!cityExists)
+                {
+                    return BadRequest("City does not exist.");
+                }
+
+                var addresses = await _locationService.GetAllAddressesByCityAsync(city);
+                return Ok(addresses);
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { Message = "Unexpected error occurred while trying to get all addresses! Please try again later!" });
             }
         }
 
@@ -63,7 +99,6 @@ namespace AmdarisProject.Controllers
             catch (Exception)
             {
                 return BadRequest(new { Message = "Unexpected error occurred while trying to get workout's locations by id! Please try again later!" });
-
             }
         }
 
@@ -90,7 +125,7 @@ namespace AmdarisProject.Controllers
         }
 
         [Authorize(Roles = "Customer")]
-        [HttpGet("cities")]
+        [HttpGet("citiesByWorkout")]
         public async Task<IActionResult> GetCitiesByWorkout(Guid workoutId)
         {
             try
