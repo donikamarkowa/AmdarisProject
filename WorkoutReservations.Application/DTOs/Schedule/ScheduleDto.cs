@@ -2,7 +2,7 @@
 {
     public class ScheduleDto
     {
-        public string Id { get; set; } = null!;
+        public string Id { get; set; }
         public string Date { get; set; } = null!;
     }
 }
