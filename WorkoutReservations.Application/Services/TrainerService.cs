@@ -1,4 +1,5 @@
 ﻿using WorkoutReservations.Application.DTOs.Parameters;
+using WorkoutReservations.Application.DTOs.Workout;
 using WorkoutReservations.Application.Models.Trainer;
 using WorkoutReservations.Application.Services.Interfaces;
 using WorkoutReservations.Domain.Entities;
@@ -102,5 +103,6 @@ namespace WorkoutReservations.Application.Services
             return await _trainerRepository
                 .GetAllByWithSelect(t => t.Locations!.Any(l => l.Id == id), t => $"{t.FirstName} {t.LastName}");
         }
+
     }
 }
