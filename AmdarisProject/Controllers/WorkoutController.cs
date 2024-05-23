@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 using WorkoutReservations.Application.DTOs.Parameters;
+using WorkoutReservations.Application.DTOs.Workout;
 using WorkoutReservations.Application.Services.Interfaces;
 using WorkoutReservations.Domain.Exceptions;
 
@@ -13,11 +15,13 @@ namespace AmdarisProject.Controllers
         private readonly IWorkoutService _workoutService;
         private readonly IWorkoutCategoryService _workoutCategoryService;
         private readonly ITrainerService _trainerService;
-        public WorkoutController(IWorkoutService workoutService, IWorkoutCategoryService workoutCategoryService, ITrainerService trainerService)
+        private readonly ILocationService _locationService;
+        public WorkoutController(IWorkoutService workoutService, IWorkoutCategoryService workoutCategoryService, ITrainerService trainerService, ILocationService locationService)
         {
             _workoutService = workoutService;
             _workoutCategoryService = workoutCategoryService;
             _trainerService = trainerService;
+            _locationService = locationService;
         }
 
         [HttpGet("all")]
@@ -36,7 +40,8 @@ namespace AmdarisProject.Controllers
             }
         }
 
-        [HttpGet("{id}/details")]
+        [HttpGet("details")]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Details(Guid id)
         { 
             try
@@ -62,7 +67,7 @@ namespace AmdarisProject.Controllers
             }
         }
 
-        [HttpGet("search")]
+        [HttpGet("search")]        
         public async Task<IActionResult> Search(string criteria)
         {
             try
@@ -134,6 +139,104 @@ namespace AmdarisProject.Controllers
             catch (Exception)
             {
                 return BadRequest(new { Message = "Unexpected error occurred while trying to search workouts by given trainer! Please try again later!" });
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("add")]
+        public async Task<IActionResult> Add([FromBody] WorkoutDto workoutDto)
+        {
+            try
+            {
+                await _workoutService.AddWorkoutAsync(workoutDto);
+                return Ok("Workout added successfully.");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                // 403 Forbidden if the user is not authorized
+                return StatusCode(403, ex.Message);
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { Message = "Unexpected error occurred while trying to add workout! Please try again later!" });
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("addTrainer")]
+        public async Task<IActionResult> AddTrainer(Guid workoutId, Guid trainerId)
+        {
+            try
+            {
+                var workoutExists = await _workoutService.ExistsByIdAsync(workoutId);
+                var trainerExists = await _trainerService.ExistsByIdAsync(trainerId);
+                if (!workoutExists || !trainerExists)
+                {
+                    throw new NotFoundException($"Trainer or workout not found.");
+                }
+
+                var isTrainer = await _workoutService.IsTrainerOfWorkoutAsync(trainerId, workoutId);
+                if (isTrainer)
+                {
+                    return BadRequest("Trainer is already associated with the workout.");
+                }
+                await _workoutService.AddTrainerToWorkoutAsync(workoutId, trainerId);
+                return Ok("Trainer successfully added to the workout.");
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { Message = "Unexpected error occurred while trying to add trainer to the workout! Please try again later!" });
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("edit")]
+        public async Task<IActionResult> Edit(Guid id, WorkoutDto workoutDto)
+        {
+            try
+            {
+                var workoutExists = await _workoutService.ExistsByIdAsync(id);
+
+                if (!workoutExists)
+                {
+                    return NotFound($"Workout with ID {id} not found.");
+                }
+                await _workoutService.EditWorkoutAsync(id, workoutDto);
+                return Ok("Workout edited successfully.");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return StatusCode(403, ex.Message);
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { Message = "Unexpected error occurred while trying to get edit workout! Please try again later!" });
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("delete")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            try
+            {
+                var workoutExists = await _workoutService.ExistsByIdAsync(id);
+
+                if (!workoutExists)
+                {
+                    return NotFound($"Workout with ID {id} not found.");
+                }
+                await _workoutService.DeleteWorkoutAsync(id);
+
+                return Ok("Workout deleted successfully.");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return StatusCode(403, ex.Message);
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { Message = "Unexpected error occurred while trying to delete workout! Please try again later!" });
             }
         }
     }
