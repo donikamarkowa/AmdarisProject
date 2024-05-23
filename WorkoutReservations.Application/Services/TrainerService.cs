@@ -1,4 +1,5 @@
 ﻿using WorkoutReservations.Application.DTOs.Parameters;
+using WorkoutReservations.Application.DTOs.Trainer;
 using WorkoutReservations.Application.DTOs.Workout;
 using WorkoutReservations.Application.Models.Trainer;
 using WorkoutReservations.Application.Services.Interfaces;
@@ -98,10 +99,18 @@ namespace WorkoutReservations.Application.Services
             return await _trainerRepository.AnyAsync(t => t.Id == trainerId && t.Locations!.Any(l => l.Id == locationId));
         }
 
-        public async Task<IEnumerable<string>> TrainersByLocationIdAsync(Guid id)
+        public async Task<IEnumerable<TrainerDto>> TrainersByLocationIdAsync(Guid id)
         {
-            return await _trainerRepository
-                .GetAllByWithSelect(t => t.Locations!.Any(l => l.Id == id), t => $"{t.FirstName} {t.LastName}");
+            var trainers = await _trainerRepository.GetAllByWithSelect(
+             user => user.Locations!.Any(l => l.Id == id),
+             user => new TrainerDto
+             {
+                 Id = user.Id.ToString(),
+                 FirstName = user.FirstName,
+                 LastName = user.LastName
+             });
+
+            return trainers;
         }
 
     }
