@@ -35,24 +35,11 @@ namespace AmdarisProject.Controllers
         {
             try
             {
-                var scheduleExists = await _scheduleService.ExistsByLocationIdAsync(locationId, dto.Date);
-
-                if (scheduleExists)
-                {
-                    return BadRequest("A schedule already exists for this location on the specified date.");
-                }
-
                 var locationExists = await _locationService.ExistsByIdAsync(locationId);
 
                 if (!locationExists)
                 {
                     return BadRequest("Location does not exist.");
-                }
-
-                var locationHasWorkout = await _locationService.IsLocationOfWorkoutAsync(locationId, workoutId);
-                if (!locationHasWorkout)
-                {
-                    return BadRequest("The location is not associated with the specified workout.");
                 }
 
                 var checkCapacity = await _scheduleService.IsCapacityValidForLocation(dto.Capacity, locationId);
@@ -69,7 +56,7 @@ namespace AmdarisProject.Controllers
                     return BadRequest("The trainer is not associated with the specified workout.");
                 }
 
-                await _scheduleService.AddScheduleToWorkoutByTrainerAsync(dto, locationId, workoutId, trainerId);
+                await _scheduleService.AddScheduleToLocationAsync(dto, locationId, trainerId, workoutId);
                 return Ok("Schedule added successfully.");
             }
             catch (UnauthorizedAccessException ex)
@@ -82,41 +69,26 @@ namespace AmdarisProject.Controllers
             }
         }
 
-        [Authorize(Roles = "Customer")]
-        [HttpGet("GetUpcomingSchedules")]
-        public async Task<IActionResult> All(Guid workoutId, Guid locationId, Guid trainerId)
+
+        [Authorize(Roles = "Trainer")]
+        [HttpGet("availableSchedules")]
+        public async Task<IActionResult> AvailableSchedulesByLocation(Guid locationId)
         {
             try
             {
-                var trainerExists = await _trainerService.ExistsByIdAsync(trainerId);
-                if (!trainerExists)
-                {
-                    return NotFound(new { message = "Trainer not found." });
-                }
-
                 var locationExists = await _locationService.ExistsByIdAsync(locationId);
                 if (!locationExists)
                 {
                     return NotFound(new { message = "Location not found." });
                 }
 
-                var workoutExists = await _workoutService.ExistsByIdAsync(workoutId);
-                if (!workoutExists)
-                {
-                    return NotFound(new { message = "Workout not found." });
-                }
+                var avaialbleSchedules = await _scheduleService.GetAllAvailableSchedulesByLocationAsync(locationId);
 
-                var schedules = await _scheduleService.AllSchedulesByTrainerWorkoutAndLocationAsync(trainerId, workoutId, locationId);
-                if (schedules == null || !schedules.Any())
-                {
-                    return NotFound(new { message = "No schedules found for the given criteria." });
-                }
-
-                return Ok(schedules);
+                return Ok(avaialbleSchedules);
             }
             catch (Exception)
             {
-                return BadRequest(new { Message = "Unexpected error occurred while trying to get upcoming schedules! Please try again later!" });
+                return BadRequest(new { Message = "Unexpected error occurred while trying to get avaialble schedules by location! Please try again later!" });
             }
         }
     }
