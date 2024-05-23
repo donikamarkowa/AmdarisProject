@@ -40,44 +40,8 @@ namespace AmdarisProject.Controllers
             }
         }
 
-        [Authorize(Roles = "Trainer")]
-        [HttpGet("cities")]
-        public async Task<IActionResult> AllCities()
-        {
-            try
-            {
-                var cities = await _locationService.GetAllCitiesAsync();
-                return Ok(cities);
-            }
-            catch (Exception)
-            {
-                return BadRequest(new { Message = "Unexpected error occurred while trying to get all cities! Please try again later!" });
-            }
-        }
-
-        [Authorize(Roles = "Trainer")]
-        [HttpGet("addressesByCity")]
-        public async Task<IActionResult> AllAddressesByCity(string city)
-        {
-            try
-            {
-                var cityExists = await _locationService.ExistsCityByNameAsync(city);
-                if (!cityExists)
-                {
-                    return BadRequest("City does not exist.");
-                }
-
-                var addresses = await _locationService.GetAllAddressesByCityAsync(city);
-                return Ok(addresses);
-            }
-            catch (Exception)
-            {
-                return BadRequest(new { Message = "Unexpected error occurred while trying to get all addresses! Please try again later!" });
-            }
-        }
-
         [Authorize(Roles = "Customer")]
-        [HttpGet("workout")]
+        [HttpGet("byWorkout")]
         public async Task<IActionResult> LocationsByWorkout(Guid id)
         {
             try
@@ -98,52 +62,32 @@ namespace AmdarisProject.Controllers
             }
             catch (Exception)
             {
-                return BadRequest(new { Message = "Unexpected error occurred while trying to get workout's locations by id! Please try again later!" });
+                return BadRequest(new { Message = "Unexpected error occurred while trying to get workout's locations by workout id! Please try again later!" });
             }
         }
 
-        [Authorize(Roles = "Customer")]
-        [HttpGet("addresses")]
-        public async Task<IActionResult> GetAddressesByCityAndWorkout(Guid id, string city)
+
+        [Authorize(Roles = "Trainer")]
+        [HttpGet("all")]
+        public async Task<IActionResult> All()
         {
             try
             {
-                var workoutExists = await _workoutService.ExistsByIdAsync(id);
-                var cityExists = await _locationService.ExistsCityByNameAsync(city);
-                if (!workoutExists || !cityExists)
-                {
-                    return BadRequest("Workout or city does not exist.");
-                }
+                var locations = await _locationService.AllLocationsAsync();
 
-                var addresses = await _locationService.AddressesByCityAndWorkoutAsync(id, city);
-                return Ok(addresses);
+                return Ok(locations);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { ex.Message });
             }
             catch (Exception)
             {
-                return BadRequest(new { Message = "Unexpected error occurred while trying to get addresses by city and workout! Please try again later!" });
+                return BadRequest(new { Message = "Unexpected error occurred while trying to get all locations! Please try again later!" });
             }
         }
 
-        [Authorize(Roles = "Customer")]
-        [HttpGet("citiesByWorkout")]
-        public async Task<IActionResult> GetCitiesByWorkout(Guid workoutId)
-        {
-            try
-            {
-                var workoutExists = await _workoutService.ExistsByIdAsync(workoutId);
-                if (!workoutExists)
-                {
-                    return BadRequest("Workout does not exist.");
-                }
 
-                var cities = await _locationService.CitiesByWorkoutAsync(workoutId);
-                return Ok(cities);
-            }
-            catch (Exception)
-            {
-                return BadRequest(new { Message = "Unexpected error occurred while trying to get cities by workout! Please try again later!" });
-            }
-        }
     }
 
 
