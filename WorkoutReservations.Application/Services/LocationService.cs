@@ -34,26 +34,6 @@ namespace WorkoutReservations.Application.Services
             await _locationRepository.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<string>> AddressesByCityAndWorkoutAsync(Guid workoutId, string city)
-        {
-            var addresses = await _locationRepository
-                    .GetAllByWithSelect(
-                    predicate: l => l.City == city && l.Workouts.Any(w => w.Id == workoutId),
-                    select: l => l.Address);
-
-            return addresses;
-        }
-
-        public async Task<IEnumerable<string>> CitiesByWorkoutAsync(Guid workoutId)
-        {
-            var cities = await _locationRepository
-                 .GetAllByWithSelect(
-                 predicate: l => l.Workouts.Any(w => w.Id == workoutId),
-                 select: l => l.City);
-
-            return cities;
-        }
-
         public async Task<IEnumerable<LocationDto>> LocationsByWorkoutIdAsync(Guid workoutId)
         {
             var locations = await _locationRepository
@@ -85,19 +65,17 @@ namespace WorkoutReservations.Application.Services
 
             return location != null && location.Workouts.Any(w => w.Id == workoutId);
         }
-
-        public async Task<IEnumerable<string>> GetAllCitiesAsync()
+        public async Task<IEnumerable<LocationDto>> AllLocationsAsync()
         {
-            var cities =  await _locationRepository.GetAllByWithSelect(l => true, l => l.City);
+            var locations = await _locationRepository.GetAllByWithSelect(l => true,
+                l => new LocationDto
+                {
+                    Id = l.Id,
+                    City = l.City,
+                    Address = l.Address
+                });
 
-            return cities.Distinct();
-        }
-
-        public async Task<IEnumerable<string>> GetAllAddressesByCityAsync(string city)
-        {
-            var addresses = await _locationRepository.GetAllByWithSelect(l => l.City == city, l => l.Address);
-
-            return addresses.Distinct();
+            return locations;
         }
     }
 }
