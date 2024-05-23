@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AmdarisProject.Extensions;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -18,12 +20,15 @@ namespace AmdarisProject.Controllers
         private readonly RoleManager<Role> _roleManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IdentityService _identityService;
-        public AuthController(UserManager<User> userManager, RoleManager<Role> roleManager, SignInManager<User> signInManager, IdentityService identityService)
+        private readonly IHttpContextAccessor _contextAccessor;
+        public AuthController(UserManager<User> userManager, RoleManager<Role> roleManager, SignInManager<User> signInManager, IdentityService identityService, IHttpContextAccessor contextAccessor)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
             _identityService = identityService;
+            _contextAccessor = contextAccessor;
+
         }
 
         [HttpPost("register")]
@@ -106,6 +111,38 @@ namespace AmdarisProject.Controllers
             var token = _identityService.CreateSecurityToken(claimsIdentity);
             var response = new AuthResultDto(_identityService.WriteToken(token));
             return Ok(response);
+        }
+
+        [HttpPost("edit")]
+        [Authorize]
+        public async Task<IActionResult> EditProfile(EditProfileDto editProfile)
+        {
+            var userId = HttpContext.GetUserIdExtension();
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("User ID not found in token.");
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return BadRequest("User not found.");
+            }
+
+            user.Age = editProfile.Age;
+            user.Bio = editProfile.Bio;
+            user.Weight = editProfile.Weight;
+            user.Height = editProfile.Height;
+            user.PhoneNumber = editProfile.PhoneNumber;
+            user.Picture = editProfile.Picture;
+
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                return BadRequest("Failed to update profile.");
+            }
+
+            return Ok("Profile updated successfully.");
         }
     }
 }
