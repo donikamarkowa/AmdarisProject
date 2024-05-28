@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using WorkoutReservations.Application.DTOs.Parameters;
 using WorkoutReservations.Application.DTOs.Workout;
@@ -15,13 +14,11 @@ namespace AmdarisProject.Controllers
         private readonly IWorkoutService _workoutService;
         private readonly IWorkoutCategoryService _workoutCategoryService;
         private readonly ITrainerService _trainerService;
-        private readonly ILocationService _locationService;
-        public WorkoutController(IWorkoutService workoutService, IWorkoutCategoryService workoutCategoryService, ITrainerService trainerService, ILocationService locationService)
+        public WorkoutController(IWorkoutService workoutService, IWorkoutCategoryService workoutCategoryService, ITrainerService trainerService)
         {
             _workoutService = workoutService;
             _workoutCategoryService = workoutCategoryService;
             _trainerService = trainerService;
-            _locationService = locationService;
         }
 
         [HttpGet("all")]
@@ -43,7 +40,7 @@ namespace AmdarisProject.Controllers
         [HttpGet("details")]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Details(Guid id)
-        { 
+        {
             try
             {
                 bool workoutExist = await _workoutService.ExistsByIdAsync(id);
@@ -67,7 +64,7 @@ namespace AmdarisProject.Controllers
             }
         }
 
-        [HttpGet("search")]        
+        [HttpGet("search")]
         public async Task<IActionResult> Search(string criteria)
         {
             try
@@ -91,7 +88,7 @@ namespace AmdarisProject.Controllers
             }
         }
 
-      
+
         [HttpGet("searchByCategory")]
         public async Task<IActionResult> SearchByCategory(Guid id)
         {
@@ -191,7 +188,7 @@ namespace AmdarisProject.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost("edit")]
-        public async Task<IActionResult> Edit(Guid id, WorkoutDto workoutDto)
+        public async Task<IActionResult> Edit(Guid id, [FromBody] WorkoutDto workoutDto)
         {
             try
             {
