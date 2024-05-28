@@ -34,6 +34,7 @@ namespace WorkoutReservations.Application.Services
             var mappedWorkouts = allWorkouts
                 .Select(w => new AllWorkoutsDto
                 {
+                    Id = w.Id.ToString(),
                     Title = w.Title,
                     Picture = w.Picture
                 })
@@ -71,6 +72,7 @@ namespace WorkoutReservations.Application.Services
             var workouts = allWorkouts
                 .Select(w => new AllWorkoutsDto
                 {
+                    Id = w.Id.ToString(),
                     Title = w.Title,
                     Picture = w.Picture
                 })
@@ -86,6 +88,7 @@ namespace WorkoutReservations.Application.Services
             var workoutsByCategory = workouts
                 .Select(w => new AllWorkoutsDto
                 {
+                    Id = w.Id.ToString(),
                     Title = w.Title,
                     Picture = w.Picture
                 });
@@ -100,6 +103,7 @@ namespace WorkoutReservations.Application.Services
             var workoutsByTrainer = allWorkouts
                 .Select(w => new AllWorkoutsDto
                 {
+                    Id = w.Id.ToString(),
                     Title = w.Title,
                     Picture = w.Picture
                 })
@@ -138,13 +142,14 @@ namespace WorkoutReservations.Application.Services
             workout.Title = workoutDto.Title;
             workout.Description = workoutDto.Description;
             workout.EquipmentNeeded = workoutDto.EquipmentNeeded;
-            workout.Duration = TimeSpan.Parse(workoutDto.Duration);
+            workout.Duration = TimeSpan.Parse(workoutDto.Duration.ToString());
             workout.Gender = workoutDto.Gender;
             workout.IntensityLevel = workoutDto.IntensityLevel;
             workout.Status = workoutDto.Status;
             workout.Picture = workoutDto.Picture;
             workout.Price = decimal.Parse(workoutDto.Price);
             workout.WorkoutCategoryId = Guid.Parse(workoutDto.WorkoutCategoryId);
+
 
             await _workoutRepository.SaveChangesAsync();
         }
