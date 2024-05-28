@@ -1,5 +1,3 @@
-
-
 using AmdarisProject.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +35,17 @@ namespace AmdarisProject
             builder.Services.AddScoped<IWorkoutCategoryService, WorkoutCategoryService>();
             builder.Services.AddScoped<IdentityService>();
 
+            // Add CORS configuration
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowReactApp", builder =>
+                {
+                    builder.WithOrigins("http://localhost:5173") 
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+            });
+
             // Add services to the container.
 
             builder.Services.AddControllers();
@@ -47,6 +56,10 @@ namespace AmdarisProject
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
+            app.UseExceptionMiddleware();
+
+            app.UseStaticFiles();
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -54,6 +67,9 @@ namespace AmdarisProject
             }
 
             app.UseHttpsRedirection();
+
+
+            app.UseCors("AllowReactApp"); // Enable CORS
 
             app.UseAuthorization();
 
