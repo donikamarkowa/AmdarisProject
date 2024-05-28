@@ -11,18 +11,15 @@ namespace WorkoutReservations.Application.Services
         private readonly IGenericRepository<Schedule, WorkoutReservationsDbContext> _scheduleRepository;
         private readonly IGenericRepository<Location, WorkoutReservationsDbContext> _locationRepository;
         private readonly IGenericRepository<User, WorkoutReservationsDbContext> _trainerRepository;
-        private readonly IGenericRepository<Workout, WorkoutReservationsDbContext> _workoutRepository;
 
 
         public ScheduleService(IGenericRepository<Schedule, WorkoutReservationsDbContext> scheduleRepository,
             IGenericRepository<Location, WorkoutReservationsDbContext> locationRepository,
-            IGenericRepository<User, WorkoutReservationsDbContext> trainerRepository,
-            IGenericRepository<Workout, WorkoutReservationsDbContext> workoutRepository)
+            IGenericRepository<User, WorkoutReservationsDbContext> trainerRepository)
         {
             _scheduleRepository = scheduleRepository;
             _locationRepository = locationRepository;
-            _trainerRepository = trainerRepository;
-            _workoutRepository = workoutRepository;
+            _trainerRepository = trainerRepository;     
         }
 
         public async Task<bool> ExistsByLocationIdAsync(Guid locationId, string date)
