@@ -14,6 +14,6 @@ namespace WorkoutReservations.Application.Models.Workout
         public WorkoutStatus Status { get; set; } 
         public string Picture { get; set; } = null!;
         public string Price { get; set; } = null!;
-        public string WorkoutCategory = null!;
+        public string WorkoutCategory { get; set; } = null!;
     }
 }
