@@ -1,6 +1,5 @@
 ﻿using WorkoutReservations.Application.DTOs.Parameters;
 using WorkoutReservations.Application.DTOs.Trainer;
-using WorkoutReservations.Application.DTOs.Workout;
 using WorkoutReservations.Application.Models.Trainer;
 using WorkoutReservations.Application.Services.Interfaces;
 using WorkoutReservations.Domain.Entities;
