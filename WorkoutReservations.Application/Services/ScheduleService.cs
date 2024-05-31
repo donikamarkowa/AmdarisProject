@@ -51,7 +51,11 @@ namespace WorkoutReservations.Application.Services
         public async Task<IEnumerable<ScheduleDto>> AllSchedulesByTrainerWorkoutAndLocationAsync(Guid trainerId, Guid workoutId, Guid locationId)
         {
             var schedules = await _scheduleRepository.GetAllBy(s =>
-                s.UserId == trainerId && s.WorkoutId == workoutId && s.LocationId == locationId && s.Date >= DateTime.Today);
+                s.UserId == trainerId &&
+                s.WorkoutId == workoutId &&
+                s.LocationId == locationId &&
+                s.Date >= DateTime.Today && 
+                s.Capacity > 0);
 
             var scheduleDtos = schedules.Select(s => new ScheduleDto
             {
