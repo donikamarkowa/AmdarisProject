@@ -69,6 +69,21 @@ namespace AmdarisProject.Controllers
             }
         }
 
+        [Authorize(Roles = "Customer")]
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAll(Guid trainerId, Guid workoutId, Guid locationId)
+        {
+            try
+            {
+                var schedules = await _scheduleService.AllSchedulesByTrainerWorkoutAndLocationAsync(trainerId, workoutId, locationId);
+                return Ok(schedules);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = "Unexpected error occurred while trying to all schedules! Please try again later!" });
+            }
+        }
+
 
         [Authorize(Roles = "Trainer")]
         [HttpGet("availableSchedules")]
