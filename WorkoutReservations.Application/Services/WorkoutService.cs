@@ -57,7 +57,7 @@ namespace WorkoutReservations.Application.Services
                 Duration = workout.Duration.ToString(),
                 Gender = workout.Gender,
                 IntensityLevel = workout.IntensityLevel,
-                Status = workout.Status,
+                Status = workout.Status.ToString(),
                 Picture = workout.Picture,
                 Price = workout.Price.ToString(),
                 WorkoutCategory = workout.WorkoutCategory.Name
@@ -114,6 +114,7 @@ namespace WorkoutReservations.Application.Services
 
         public async Task AddWorkoutAsync(WorkoutDto workoutDto)
         {
+       
 
             var workout = new Workout()
             {
@@ -123,7 +124,7 @@ namespace WorkoutReservations.Application.Services
                 Duration = TimeSpan.Parse(workoutDto.Duration),
                 Gender = workoutDto.Gender,
                 IntensityLevel = workoutDto.IntensityLevel,
-                Status = WorkoutStatus.Active,
+                Status = workoutDto.Status,
                 Picture = workoutDto.Picture,
                 Price = decimal.Parse(workoutDto.Price),
                 RecommendedFrequency = workoutDto.RecommendedFrequency,
