@@ -55,6 +55,7 @@ namespace WorkoutReservations.Application.Services
 
             var scheduleDtos = schedules.Select(s => new ScheduleDto
             {
+                Id = s.Id.ToString(),
                 Date = s.Date.ToString("dd-MM-yyyy HH:mm"),
             });
 
