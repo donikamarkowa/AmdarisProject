@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using WorkoutReservations.Application.DTOs.Auth;
@@ -143,6 +144,19 @@ namespace AmdarisProject.Controllers
             }
 
             return Ok("Profile updated successfully.");
+        }
+
+        [HttpGet("getRoles")]
+        public async Task<IActionResult> GetRoles()
+        {
+            var roles = await _roleManager.Roles.ToListAsync();
+            var roleDtos = roles.Select(role => new RoleInfoDto
+            {
+                Id = role.Id.ToString(),
+                Name = role.Name!
+            }).ToList();
+
+            return Ok(roleDtos);
         }
     }
 }
