@@ -78,7 +78,7 @@ namespace AmdarisProject.Controllers
                 var schedules = await _scheduleService.AllSchedulesByTrainerWorkoutAndLocationAsync(trainerId, workoutId, locationId);
                 return Ok(schedules);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return BadRequest(new { Message = "Unexpected error occurred while trying to all schedules! Please try again later!" });
             }
