@@ -94,14 +94,7 @@ namespace AmdarisProject.Controllers
         {
             try
             {
-                var categoryExist = await _workoutCategoryService.ExistsByIdAsync(id);
-
-                if (!categoryExist)
-                {
-                    throw new NotFoundException("No workouts found for the specified category.");
-                }
-
-                var workoutsByCategory = await _workoutService.WorkoutsByCategoryAsync(id);
+                var workoutsByCategory = await _workoutService.WorkoutsByCategoryIdAsync(id);
                 return Ok(workoutsByCategory);
             }
             catch (NotFoundException ex)
@@ -119,13 +112,6 @@ namespace AmdarisProject.Controllers
         {
             try
             {
-                var trainer = await _trainerService.ExistsByIdAsync(id);
-
-                if (!trainer)
-                {
-                    throw new NotFoundException($"Trainer with {id} not found.");
-                }
-
                 var workoutsByTrainer = await _workoutService.WorkoutsByTrainerIdAsync(id);
                 return Ok(workoutsByTrainer);
             }
@@ -150,7 +136,6 @@ namespace AmdarisProject.Controllers
             }
             catch (UnauthorizedAccessException ex)
             {
-                // 403 Forbidden if the user is not authorized
                 return StatusCode(403, ex.Message);
             }
             catch (Exception)
