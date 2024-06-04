@@ -19,7 +19,21 @@ namespace WorkoutReservations.Application.Services
             _locationRepository = locationRepository;
         }
 
-        public async Task<PaginatedList<AllTrainersDto>> AllTrainersAsync(PaginationParameters trainerParameters)
+        public async Task<IEnumerable<TrainerDto>> AllTrainersAsync()
+        {
+            var trainers = await _trainerRepository.GetAll();
+
+            var trainersDto = trainers.Select(t => new TrainerDto
+            {
+                Id = t.Id.ToString(),
+                FirstName = t.FirstName,
+                LastName = t.LastName
+            });
+
+            return trainersDto;
+        }
+
+        public async Task<PaginatedList<AllTrainersDto>> AllTrainersByPaggingAsync(PaginationParameters trainerParameters)
         {
             var allTrainers = await _trainerRepository.GetAllBy(predicate: u => u.Role.Name == "Trainer");
             var mappedTrainers = allTrainers
@@ -112,5 +126,18 @@ namespace WorkoutReservations.Application.Services
             return trainers;
         }
 
+        public async Task<IEnumerable<TrainerDto>> TrainersByWorkoutIdAsync(Guid id)
+        {
+            var workout = await _locationRepository.GetById(id);
+
+            var trainers = workout.Trainers.Select(t => new TrainerDto
+            {
+                Id = t.Id.ToString(),
+                FirstName = t.FirstName,
+                LastName = t.LastName
+            });
+
+            return trainers;
+        }
     }
 }
