@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WorkoutReservations.Application.DTOs.Parameters;
+using WorkoutReservations.Application.Services;
 using WorkoutReservations.Application.Services.Interfaces;
 using WorkoutReservations.Domain.Exceptions;
 
@@ -13,11 +14,13 @@ namespace AmdarisProject.Controllers
     {
         private readonly ITrainerService _trainerService;
         private readonly ILocationService _locationService;
+        private readonly IWorkoutService _workoutService;
         private readonly IHttpContextAccessor _contextAccessor;
-        public TrainerController(ITrainerService trainerService, ILocationService locationService, IHttpContextAccessor contextAccessor)
+        public TrainerController(ITrainerService trainerService, ILocationService locationService, IWorkoutService workoutService, IHttpContextAccessor contextAccessor)
         {
             _trainerService = trainerService;
             _locationService = locationService;
+            _workoutService = workoutService;
             _contextAccessor = contextAccessor;
         }
 
@@ -26,13 +29,29 @@ namespace AmdarisProject.Controllers
         {
             try
             {
-                var allTrainers = await _trainerService.AllTrainersAsync(trainerParameters);
+                var allTrainers = await _trainerService.AllTrainersByPaggingAsync(trainerParameters);
 
                 return Ok(allTrainers);
             }
             catch (Exception)
             {
                 return BadRequest(new { Message = "Unexpected error occurred while trying to get all trainers! Please try again later!" });
+            }
+        }
+
+        [HttpGet("allNames")]
+        public async Task<IActionResult> AllTrainersNames()
+        {
+            try
+            {
+                var trainers = await _trainerService.AllTrainersAsync();
+
+                return Ok(trainers);
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { Message = "Unexpected error occurred while trying to get all trainers! Please try again later!" });
+
             }
         }
 
@@ -85,6 +104,30 @@ namespace AmdarisProject.Controllers
             catch (Exception)
             {
                 return BadRequest(new { Message = "An unexpected error occurred while searching for trainers. Please try again later." });
+            }
+        }
+
+        [HttpGet("trainersByWorkout")]
+        public async Task<IActionResult> ByWorkout(Guid id)
+        {
+            try
+            {
+                var workout = await _workoutService.ExistsByIdAsync(id);
+                if (!workout)
+                {
+                    return NotFound(new { Message = $"Workout with id = {id} not found!" });
+                }
+
+                var trainersByWorkout = await _trainerService.TrainersByWorkoutIdAsync(id);
+                return Ok(trainersByWorkout);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { ex.Message });
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { Message = "Unexpected error occurred while trying to search workouts by given trainer! Please try again later!" });
             }
         }
 
