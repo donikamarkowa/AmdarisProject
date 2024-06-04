@@ -81,9 +81,9 @@ namespace WorkoutReservations.Application.Services
             return workouts;
         }
 
-        public async Task<IEnumerable<AllWorkoutsDto>> WorkoutsByCategoryAsync(Guid categoryId)
+        public async Task<IEnumerable<AllWorkoutsDto>> WorkoutsByCategoryAsync(Guid id)
         {
-            var workouts = await _workoutRepository.GetAllBy(predicate: w => w.WorkoutCategoryId == categoryId);
+            var workouts = await _workoutRepository.GetAllBy(predicate: w => w.WorkoutCategoryId == id);
 
             var workoutsByCategory = workouts
                 .Select(w => new AllWorkoutsDto
@@ -96,9 +96,10 @@ namespace WorkoutReservations.Application.Services
             return workoutsByCategory;
         }
 
-        public async Task<IEnumerable<AllWorkoutsDto>> WorkoutsByTrainerIdAsync(Guid trainerId)
+        public async Task<IEnumerable<AllWorkoutsDto>> WorkoutsByTrainerIdAsync(Guid id)
         {
-            var allWorkouts = await _workoutRepository.GetAllBy(predicate: w => w.Trainers.Any(t => t.Id == trainerId));
+            var allWorkouts = await _workoutRepository.GetAllBy(
+                  w => w.Trainers.Any(t => t.Id == id));
 
             var workoutsByTrainer = allWorkouts
                 .Select(w => new AllWorkoutsDto

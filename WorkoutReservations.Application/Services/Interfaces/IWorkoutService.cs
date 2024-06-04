@@ -12,7 +12,7 @@ namespace WorkoutReservations.Application.Services.Interfaces
         public Task<bool> IsTrainerOfWorkoutAsync(Guid trainerId, Guid workoutId);
         public Task<IEnumerable<AllWorkoutsDto>> SearchWorkoutByCriteriaAsync(string criteria);
         public Task<IEnumerable<AllWorkoutsDto>> WorkoutsByTrainerIdAsync(Guid id);
-        public Task<IEnumerable<AllWorkoutsDto>> WorkoutsByCategoryAsync(Guid categoryId);
+        public Task<IEnumerable<AllWorkoutsDto>> WorkoutsByCategoryAsync(Guid id);
         public Task AddTrainerToWorkoutAsync(Guid workoutId, Guid trainerId);
         public Task AddLocationToWorkoutAsync(Guid workoutId, Guid locationId);
         public Task AddWorkoutAsync(WorkoutDto workoutDto);
