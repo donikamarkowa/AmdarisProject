@@ -7,7 +7,6 @@ namespace AmdarisProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
     public class WorkoutCategoryController : ControllerBase
     {
         private readonly IWorkoutCategoryService _workoutCategoryService;
@@ -16,7 +15,25 @@ namespace AmdarisProject.Controllers
             _workoutCategoryService = workoutCategoryService;
         }
 
+        [HttpGet("all")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> All()
+        {
+            try
+            {
+                var categories = await _workoutCategoryService.AllCategoriesAsync();
+
+                return Ok(categories);
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { Message = "Unexpected error occurred while trying to get all categories! Please try again later!" });
+
+            }
+        }
+
         [HttpPost("add")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Add([FromBody] WorkoutCategoryDto dto)
         {
             try
@@ -28,7 +45,6 @@ namespace AmdarisProject.Controllers
             }
             catch (UnauthorizedAccessException ex)
             {
-                // 403 Forbidden if the user is not authorized
                 return StatusCode(403, ex.Message);
             }
             catch (Exception)
@@ -38,6 +54,7 @@ namespace AmdarisProject.Controllers
         }
 
         [HttpPost("edit")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit([FromBody] WorkoutCategoryDto dto, Guid id)
         {
             try
@@ -49,7 +66,6 @@ namespace AmdarisProject.Controllers
             }
             catch (UnauthorizedAccessException ex)
             {
-                // 403 Forbidden if the user is not authorized
                 return StatusCode(403, ex.Message);
             }
             catch (Exception)
