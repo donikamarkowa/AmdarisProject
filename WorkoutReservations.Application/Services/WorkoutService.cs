@@ -81,7 +81,7 @@ namespace WorkoutReservations.Application.Services
             return workouts;
         }
 
-        public async Task<IEnumerable<AllWorkoutsDto>> WorkoutsByCategoryAsync(Guid id)
+        public async Task<IEnumerable<AllWorkoutsDto>> WorkoutsByCategoryIdAsync(Guid id)
         {
             var workouts = await _workoutRepository.GetAllBy(predicate: w => w.WorkoutCategoryId == id);
 
