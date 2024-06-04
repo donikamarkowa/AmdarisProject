@@ -18,11 +18,25 @@ namespace WorkoutReservations.Application.Services
         {
             var category = new WorkoutCategory
             {
+                Id = Guid.NewGuid(),
                 Name = dto.Name
             };
 
             await _workoutCategoryRepository.Add(category);
             await _workoutCategoryRepository.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<WorkoutCategoryDto>> AllCategoriesAsync()
+        {
+            var categories = await _workoutCategoryRepository.GetAll();
+
+            var categoryDtos = categories.Select(category => new WorkoutCategoryDto
+            {
+                Id = category.Id.ToString(),
+                Name = category.Name
+            });
+
+            return categoryDtos;
         }
 
         public async Task EditCategoryAsyn(Guid id, WorkoutCategoryDto dto)

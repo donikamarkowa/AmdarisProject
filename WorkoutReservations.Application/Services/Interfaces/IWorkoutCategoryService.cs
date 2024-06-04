@@ -7,5 +7,6 @@ namespace WorkoutReservations.Application.Services.Interfaces
         public Task<bool> ExistsByIdAsync(Guid id);
         public Task AddCategoryAsync(WorkoutCategoryDto dto);
         public Task EditCategoryAsyn(Guid id, WorkoutCategoryDto dto);
+        public Task<IEnumerable<WorkoutCategoryDto>> AllCategoriesAsync();
     }
 }
