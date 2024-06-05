@@ -36,7 +36,7 @@ namespace AmdarisProject.Controllers
             }
             catch (Exception)
             {
-                return BadRequest(new { Message = "Unexpected error occurred while trying to add location! Please try again later!" });
+                return BadRequest(new ErrorResponse { Message = "Unexpected error occurred while trying to add location! Please try again later!" });
             }
         }
 
@@ -62,7 +62,7 @@ namespace AmdarisProject.Controllers
             }
             catch (Exception)
             {
-                return BadRequest(new { Message = "Unexpected error occurred while trying to get workout's locations by workout id! Please try again later!" });
+                return BadRequest(new ErrorResponse { Message = "Unexpected error occurred while trying to get workout's locations by workout id! Please try again later!" });
             }
         }
 
@@ -83,7 +83,7 @@ namespace AmdarisProject.Controllers
             }
             catch (Exception)
             {
-                return BadRequest(new { Message = "Unexpected error occurred while trying to get all locations! Please try again later!" });
+                return BadRequest(new ErrorResponse { Message = "Unexpected error occurred while trying to get all locations! Please try again later!" });
             }
         }
 
