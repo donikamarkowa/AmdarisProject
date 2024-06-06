@@ -18,6 +18,7 @@ namespace WorkoutReservations.Application.Services.Interfaces
         public Task AddWorkoutAsync(WorkoutDto workoutDto);
         public Task EditWorkoutAsync(Guid id, WorkoutDto workoutDto);
         public Task DeleteWorkoutAsync(Guid id);
+        public Task<IEnumerable<string>> GetWorkoutsPhotos();
 
     }
 }

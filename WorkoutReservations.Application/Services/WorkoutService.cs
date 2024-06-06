@@ -1,4 +1,5 @@
-﻿using WorkoutReservations.Application.DTOs.Parameters;
+﻿using System.Linq.Expressions;
+using WorkoutReservations.Application.DTOs.Parameters;
 using WorkoutReservations.Application.DTOs.Workout;
 using WorkoutReservations.Application.Models.Workout;
 using WorkoutReservations.Application.Services.Interfaces;
@@ -189,6 +190,13 @@ namespace WorkoutReservations.Application.Services
             await _workoutRepository.SaveChangesAsync();
         }
 
+        public async Task<IEnumerable<string>> GetWorkoutsPhotos()
+        {
+            Expression<Func<Workout, bool>> predicate = w => true;
 
+            var photos = await _workoutRepository.GetAllByWithSelect(predicate, w => w.Picture);
+
+            return photos;
+        }
     }
 }
