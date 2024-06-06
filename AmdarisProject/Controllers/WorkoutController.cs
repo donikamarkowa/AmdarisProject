@@ -221,5 +221,20 @@ namespace AmdarisProject.Controllers
                 return BadRequest(new { Message = "Unexpected error occurred while trying to delete workout! Please try again later!" });
             }
         }
+
+        [HttpGet("photos")]
+        public async Task<IActionResult> GetPhotos()
+        {
+            try
+            {
+                var photos = await _workoutService.GetWorkoutsPhotos();
+
+                return Ok(photos);
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { Message = "Unexpected error occurred while trying to get photos of workouts! Please try again later!" });
+            }
+        }
     }
 }
