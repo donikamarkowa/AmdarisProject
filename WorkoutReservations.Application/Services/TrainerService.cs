@@ -21,7 +21,7 @@ namespace WorkoutReservations.Application.Services
 
         public async Task<IEnumerable<TrainerDto>> AllTrainersAsync()
         {
-            var trainers = await _trainerRepository.GetAll();
+            var trainers = await _trainerRepository.GetAllBy(u => u.Role.Name == "Trainer");
 
             var trainersDto = trainers.Select(t => new TrainerDto
             {
@@ -35,7 +35,7 @@ namespace WorkoutReservations.Application.Services
 
         public async Task<PaginatedList<AllTrainersDto>> AllTrainersByPaggingAsync(PaginationParameters trainerParameters)
         {
-            var allTrainers = await _trainerRepository.GetAllBy(predicate: u => u.Role.Name == "Trainer");
+            var allTrainers = await _trainerRepository.GetAllBy(u => u.Role.Name == "Trainer");
             var mappedTrainers = allTrainers
                 .Select(w => new AllTrainersDto
                 {
