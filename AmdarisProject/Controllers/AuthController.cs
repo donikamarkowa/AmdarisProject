@@ -42,9 +42,14 @@ namespace AmdarisProject.Controllers
                 FirstName = registerUser.FirstName,
                 LastName = registerUser.LastName,
                 Gender = registerUser.Gender,
-                RoleId = Guid.Parse(registerUser.Role.Id)
+                RoleId = Guid.Parse(registerUser.Role.Id),
             };
             var createdUser = await _userManager.CreateAsync(user, registerUser.Password);
+
+            if (!createdUser.Succeeded)
+            {
+                return BadRequest();
+            }
 
             var newClaims = new List<Claim>
             {
