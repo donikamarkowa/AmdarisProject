@@ -101,6 +101,11 @@ namespace AmdarisProject.Controllers
 
             var roles = await _userManager.GetRolesAsync(user!);
 
+            var newClaims = new List<Claim>
+            {
+                new(CustomClaimTypes.Id, user.Id.ToString())
+            };
+
             var claimsIdentity = new ClaimsIdentity(new Claim[]
             {
                 new(JwtRegisteredClaimNames.Sub, user!.Email ?? throw new InvalidOperationException()),
@@ -108,6 +113,7 @@ namespace AmdarisProject.Controllers
             });
 
             claimsIdentity.AddClaims(claims);
+            claimsIdentity.AddClaims(newClaims);
 
             foreach (var role in roles)
             {
