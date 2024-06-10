@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using WorkoutReservations.Application.DTOs.Parameters;
+using WorkoutReservations.Application.DTOs.Trainer;
 using WorkoutReservations.Application.DTOs.Workout;
 using WorkoutReservations.Application.Models.Workout;
 using WorkoutReservations.Application.Services.Interfaces;
@@ -117,7 +118,6 @@ namespace WorkoutReservations.Application.Services
         public async Task AddWorkoutAsync(WorkoutDto workoutDto)
         {
        
-
             var workout = new Workout()
             {
                 Title = workoutDto.Title,
@@ -197,6 +197,19 @@ namespace WorkoutReservations.Application.Services
             var photos = await _workoutRepository.GetAllByWithSelect(predicate, w => w.Picture);
 
             return photos;
+        }
+
+        public async Task<IEnumerable<WorkoutsTitlesDto>> AllWorkoutsTitlesAsync()
+        {
+            var workouts = await _workoutRepository.GetAll();
+
+            var workoutsTitles = workouts.Select(w => new WorkoutsTitlesDto
+            {
+                Id = w.Id.ToString(),
+                Title = w.Title
+            });
+
+            return workoutsTitles;
         }
     }
 }
