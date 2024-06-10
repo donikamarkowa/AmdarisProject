@@ -12,11 +12,15 @@ namespace WorkoutReservations.Application.Services
     {
         private readonly IGenericRepository<User, WorkoutReservationsDbContext> _trainerRepository;
         private readonly IGenericRepository<Location, WorkoutReservationsDbContext> _locationRepository;
+        private readonly IGenericRepository<Workout, WorkoutReservationsDbContext> _workoutRepository;
         public TrainerService(IGenericRepository<User, WorkoutReservationsDbContext> trainerRepository,
-            IGenericRepository<Location, WorkoutReservationsDbContext> locationRepository)
+            IGenericRepository<Location, WorkoutReservationsDbContext> locationRepository,
+            IGenericRepository<Workout, WorkoutReservationsDbContext> workoutRepository)
         {
             _trainerRepository = trainerRepository;
             _locationRepository = locationRepository;
+            _workoutRepository = workoutRepository;
+
         }
 
         public async Task<IEnumerable<TrainerDto>> AllTrainersAsync()
@@ -128,7 +132,7 @@ namespace WorkoutReservations.Application.Services
 
         public async Task<IEnumerable<TrainerDto>> TrainersByWorkoutIdAsync(Guid id)
         {
-            var workout = await _locationRepository.GetById(id);
+            var workout = await _workoutRepository.GetByWithInclude(w => w.Id == id, w => w.Trainers);
 
             var trainers = workout.Trainers.Select(t => new TrainerDto
             {
