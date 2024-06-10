@@ -125,6 +125,23 @@ namespace AmdarisProject.Controllers
             }
         }
 
+        [HttpGet("titles")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> AllTitles()
+        {
+            try
+            {
+                var workoutsTitles = await _workoutService.AllWorkoutsTitlesAsync();
+
+                return Ok(workoutsTitles);
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { Message = "Unexpected error occurred while trying to get all workouts! Please try again later!" });
+
+            }
+        }
+
         [Authorize(Roles = "Admin")]
         [HttpPost("add")]
         public async Task<IActionResult> Add([FromBody] WorkoutDto workoutDto)
