@@ -68,24 +68,6 @@ namespace WorkoutReservations.Infrastructure.Repositories
         {
             return await _set.AnyAsync(predicate);
         }
-        public async Task<IEnumerable<string>> GetPropertyValuesWithIncludeAsync(Expression<Func<TEntity, string>> selector, Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includeProperties)
-        {
-            var query = IncludeProperties(includeProperties).Where(predicate);
-            return await query.Select(selector).ToListAsync();
-        }
-
-        public async Task<IEnumerable<string>> GetPropertyValuesAsync(Expression<Func<TEntity, string>> propertySelector, Expression<Func<TEntity, bool>> propertyPredicate)
-        {
-            return await _set
-                .Where(propertyPredicate)
-                .Select(propertySelector)
-                 .ToListAsync();
-        }
-        public async Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate)
-        {
-            return await _set .FirstOrDefaultAsync(predicate);
-        }
-
         public async Task<int> SaveChangesAsync()
         {
             return await _dbContext.SaveChangesAsync();

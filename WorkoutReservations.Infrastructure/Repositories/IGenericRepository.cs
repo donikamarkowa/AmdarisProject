@@ -15,7 +15,6 @@ namespace WorkoutReservations.Infrastructure.Repositories
         Task Add(TEntity entity);
         void Edit(TEntity entity);
         void Delete(TEntity entity);
-        Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate);
         Task<int> SaveChangesAsync();
         public Task<IEnumerable<TResult>> GetAllByWithSelect<TResult>(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, TResult>> select);
 
