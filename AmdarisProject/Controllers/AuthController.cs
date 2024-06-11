@@ -41,7 +41,6 @@ namespace AmdarisProject.Controllers
                 UserName = registerUser.Email,
                 FirstName = registerUser.FirstName,
                 LastName = registerUser.LastName,
-                Gender = registerUser.Gender,
                 RoleId = Guid.Parse(registerUser.Role.Id),
             };
             var createdUser = await _userManager.CreateAsync(user, registerUser.Password);
@@ -143,6 +142,7 @@ namespace AmdarisProject.Controllers
 
             user.Age = editProfile.Age;
             user.Bio = editProfile.Bio;
+            user.Gender = editProfile.Gender;
             user.Weight = editProfile.Weight;
             user.Height = editProfile.Height;
             user.PhoneNumber = editProfile.PhoneNumber;
