@@ -34,13 +34,6 @@ namespace WorkoutReservations.Infrastructure.Database
                 .HasDefaultValue(DateTime.UtcNow);
 
             builder
-                .Entity<User>()
-                .HasOne(u => u.Role)
-                .WithMany(r => r.Users)
-                .HasForeignKey(u => u.RoleId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            builder
                 .Entity<Workout>()
                 .HasOne(w => w.WorkoutCategory)
                 .WithMany(wc => wc.Workouts)
