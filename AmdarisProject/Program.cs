@@ -75,6 +75,15 @@ namespace AmdarisProject
 
             app.MapControllers();
 
+            // Seed the database
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var context = services.GetRequiredService<WorkoutReservationsDbContext>();
+                var seeder = new DataSeeder(context);
+                seeder.Seed();
+            }
+
             app.Run();
         }
     }
