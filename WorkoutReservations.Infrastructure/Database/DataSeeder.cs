@@ -105,7 +105,6 @@ namespace WorkoutReservations.Infrastructure.Database
                     Bio = "I'm a dedicated fitness professional with a passion for aerobic and strength training. With years of experience, I specialize in crafting personalized workout programs to help clients achieve their fitness goals. Whether you're aiming to improve cardiovascular health, build strength, or enhance overall fitness, I'm here to support you every step of the way. My dynamic training sessions are tailored to your needs, combining effective aerobic exercises with targeted strength training techniques. Let's work together to unlock your full potential and achieve lasting results!\r\n",
                     Weight = 50,
                     Height = 1.68,
-                    //RoleId = Guid.Parse("eae5654b-fd83-4e58-b380-e10eb18498c1"), //trainer
                     Email = "alexandra.trainer@gmail.com",
                     PhoneNumber = "0897689004",
                     Picture = "https://media.istockphoto.com/id/876704262/photo/smiling-female-fitness-instructor-with-clipboard-showing-thumb-up-in-gym.jpg?s=1024x1024&w=is&k=20&c=zVGwh8CbigQYwVahGnn9DK48_zYEJyJ7ab7ptOL4bUQ="
@@ -119,7 +118,6 @@ namespace WorkoutReservations.Infrastructure.Database
                     Gender = "Female",
                     Weight = 62,
                     Height = 1.70,
-                    //RoleId = Guid.Parse("1ce6918e-f21f-494b-aa5e-cb26a78a5b3e"), //customer
                     Email = "kalina.customer@gmail.com",
                     PhoneNumber = "0899761124"
                 });              
