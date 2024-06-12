@@ -12,8 +12,7 @@ namespace WorkoutReservations.Domain.Entities
         public string LastName { get; set; } = null!;
         public int? Age { get; set; }
 
-        [Required]
-        public string Gender { get; set; } = null!;
+        public string? Gender { get; set; } 
 
         public string? Bio { get; set; }
 
@@ -22,8 +21,7 @@ namespace WorkoutReservations.Domain.Entities
         public double? Height { get; set; }
 
         public string? Picture { get; set; } 
-        public Guid RoleId { get; set; }
-        public virtual Role Role { get; set; } = null!;
+
         public virtual ICollection<Workout>? Workouts { get; set; } = new List<Workout>();
         public virtual ICollection<Location>? Locations { get; set; } = new List<Location>();
     }
