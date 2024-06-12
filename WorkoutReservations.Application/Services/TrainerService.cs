@@ -1,4 +1,5 @@
-﻿using WorkoutReservations.Application.DTOs.Parameters;
+﻿using Microsoft.AspNetCore.Identity;
+using WorkoutReservations.Application.DTOs.Parameters;
 using WorkoutReservations.Application.DTOs.Trainer;
 using WorkoutReservations.Application.Models.Trainer;
 using WorkoutReservations.Application.Services.Interfaces;
@@ -13,21 +14,29 @@ namespace WorkoutReservations.Application.Services
         private readonly IGenericRepository<User, WorkoutReservationsDbContext> _trainerRepository;
         private readonly IGenericRepository<Location, WorkoutReservationsDbContext> _locationRepository;
         private readonly IGenericRepository<Workout, WorkoutReservationsDbContext> _workoutRepository;
+
+        private readonly RoleManager<Role> _roleManager;
+        private readonly UserManager<User> _userManager;
         public TrainerService(IGenericRepository<User, WorkoutReservationsDbContext> trainerRepository,
             IGenericRepository<Location, WorkoutReservationsDbContext> locationRepository,
-            IGenericRepository<Workout, WorkoutReservationsDbContext> workoutRepository)
+            IGenericRepository<Workout, WorkoutReservationsDbContext> workoutRepository,
+            RoleManager<Role> roleManager, 
+            UserManager<User> userManager)
         {
             _trainerRepository = trainerRepository;
             _locationRepository = locationRepository;
             _workoutRepository = workoutRepository;
+            _roleManager = roleManager;
+            _userManager = userManager;
 
         }
 
         public async Task<IEnumerable<TrainerDto>> AllTrainersAsync()
         {
-            var trainers = await _trainerRepository.GetAllBy(u => u.Role.Name == "Trainer");
+            var trainerRole = await _roleManager.FindByNameAsync("Trainer");
+            var allTrainers = await _userManager.GetUsersInRoleAsync(trainerRole!.Name!);
 
-            var trainersDto = trainers.Select(t => new TrainerDto
+            var trainersDto = allTrainers.Select(t => new TrainerDto
             {
                 Id = t.Id.ToString(),
                 FirstName = t.FirstName,
@@ -39,7 +48,9 @@ namespace WorkoutReservations.Application.Services
 
         public async Task<PaginatedList<AllTrainersDto>> AllTrainersByPaggingAsync(PaginationParameters trainerParameters)
         {
-            var allTrainers = await _trainerRepository.GetAllBy(u => u.Role.Name == "Trainer");
+            var trainerRole = await _roleManager.FindByNameAsync("Trainer");
+            var allTrainers = await _userManager.GetUsersInRoleAsync(trainerRole!.Name!);
+
             var mappedTrainers = allTrainers
                 .Select(w => new AllTrainersDto
                 {
@@ -75,11 +86,12 @@ namespace WorkoutReservations.Application.Services
 
         public async Task<IEnumerable<AllTrainersDto>> SearchTrainersByCriteria(string criteria)
         {
-            var trainers = await _trainerRepository.GetAllBy(
-                predicate: u => u.Role.Name == "Trainer" &&
-                (u.FirstName.Contains(criteria) || u.LastName.Contains(criteria)));
+            var trainers = await _userManager.GetUsersInRoleAsync("Trainer");
 
-            var trainersByCriteria = trainers
+            var trainersWithFullNames = await _trainerRepository.GetAllBy(
+                u => u.FirstName.Contains(criteria) || u.LastName.Contains(criteria));
+
+            var trainersByCriteria = trainersWithFullNames
                 .Select(t => new AllTrainersDto
                 {
                     Id = t.Id.ToString(),
