@@ -16,7 +16,6 @@ namespace AmdarisProject.Controllers
         }
 
         [HttpGet("all")]
-        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> All()
         {
             try
