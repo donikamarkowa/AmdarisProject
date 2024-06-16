@@ -54,31 +54,15 @@ namespace WorkoutReservations.Application.Services
             await _bookingRepository.SaveChangesAsync();
         }
 
-        public async Task CancelAsync(Guid bookingId)
-        {
-            var booking = await _bookingRepository.GetById(bookingId);
-
-            booking.Status = BookingStatus.CancelledByUser;
-            _bookingRepository.Edit(booking);
-
-            await _bookingRepository.SaveChangesAsync();
-        }
-        public async Task ConfirmAsync(Guid bookingId)
-        {
-            var booking = await _bookingRepository.GetById(bookingId);
-
-            booking.Status = BookingStatus.Confirmed;
-            _bookingRepository.Edit(booking);
-
-            await _bookingRepository.SaveChangesAsync();
-        }
-
-
         public async Task<bool> ExistsByIdAsync(Guid id)
         {
             return await _bookingRepository.GetById(id) != null;
 
         }
 
+        public async Task<bool> IsUserAlreadyBookedAsync(Guid userId, Guid scheduleId)
+        {
+            return await _scheduleRepository.AnyAsync(s => s.Id == scheduleId && s.Id == scheduleId);
+        }
     }
 }

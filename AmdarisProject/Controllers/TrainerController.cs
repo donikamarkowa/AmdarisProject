@@ -40,7 +40,6 @@ namespace AmdarisProject.Controllers
         }
 
         [HttpGet("allNames")]
-        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> AllTrainersNames()
         {
             try
@@ -132,7 +131,6 @@ namespace AmdarisProject.Controllers
             }
         }
 
-        [Authorize(Roles = "Customer")]
         [HttpGet("location")]
         public async Task<IActionResult> TrainersByLocation(Guid id)
         {

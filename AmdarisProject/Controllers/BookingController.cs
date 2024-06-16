@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AmdarisProject.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WorkoutReservations.Application.Services.Interfaces;
 using WorkoutReservations.Domain.Exceptions;
@@ -12,11 +13,12 @@ namespace AmdarisProject.Controllers
     {
         private readonly IBookingService _bookingService;
         private readonly IScheduleService _scheduleService;
-        public BookingController(IBookingService bookingService, IScheduleService scheduleService)
+        private readonly IHttpContextAccessor _contextAccessor;
+        public BookingController(IBookingService bookingService, IScheduleService scheduleService, IHttpContextAccessor contextAccessor)
         {
             _bookingService = bookingService;
             _scheduleService = scheduleService;
-
+            _contextAccessor = contextAccessor;
         }
 
         [HttpPost("add")]
@@ -28,6 +30,14 @@ namespace AmdarisProject.Controllers
                 if (!scheduleHasCapacity)
                 {
                     return BadRequest(new { message = "Schedule is fully booked." });
+                }
+
+                var userId = Guid.Parse(_contextAccessor.HttpContext!.GetUserIdExtension());
+                var userBookedAlready = await _bookingService.IsUserAlreadyBookedAsync(userId, scheduleId);
+
+                if (userBookedAlready)
+                {
+                    return BadRequest(new { message = "User is already booked for this schedule." });
                 }
 
                 await _bookingService.AddBookingAsync(workoutId, scheduleId);
