@@ -126,7 +126,6 @@ namespace AmdarisProject.Controllers
         }
 
         [HttpGet("titles")]
-        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> AllTitles()
         {
             try
