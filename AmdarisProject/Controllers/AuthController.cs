@@ -41,8 +41,8 @@ namespace AmdarisProject.Controllers
                 UserName = registerUser.Email,
                 FirstName = registerUser.FirstName,
                 LastName = registerUser.LastName,
-                RoleId = Guid.Parse(registerUser.Role.Id),
             };
+
             var createdUser = await _userManager.CreateAsync(user, registerUser.Password);
 
             if (!createdUser.Succeeded)
@@ -168,6 +168,36 @@ namespace AmdarisProject.Controllers
             }).ToList();
 
             return Ok(roleDtos);
+        }
+
+        [HttpGet("details")]
+        [Authorize]
+        public async Task<IActionResult> GetUserDetails()
+        {
+            var userId = HttpContext.GetUserIdExtension();
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("User ID not found in token.");
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return BadRequest("User not found.");
+            }
+
+            var roles = await _userManager.GetRolesAsync(user);
+            var role = roles.FirstOrDefault();
+
+            var userDetails = new UserDetails()
+            {
+                Id = user.Id.ToString(),
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Role = role!
+            };
+
+            return Ok(userDetails);
         }
     }
 }
