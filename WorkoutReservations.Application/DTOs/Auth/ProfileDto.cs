@@ -1,6 +1,6 @@
 ﻿namespace WorkoutReservations.Application.DTOs.Auth
 {
-    public class EditProfileDto
+    public class ProfileDto
     {
         public int? Age { get; set; }
         public string? Bio { get; set; }
