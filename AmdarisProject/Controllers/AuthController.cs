@@ -126,7 +126,7 @@ namespace AmdarisProject.Controllers
 
         [HttpPost("edit")]
         [Authorize]
-        public async Task<IActionResult> EditProfile(EditProfileDto editProfile)
+        public async Task<IActionResult> EditProfile(ProfileDto editProfile)
         {
             var userId = HttpContext.GetUserIdExtension();
             if (string.IsNullOrEmpty(userId))
@@ -198,6 +198,42 @@ namespace AmdarisProject.Controllers
             };
 
             return Ok(userDetails);
+        }
+
+        [HttpGet("profile")]
+        [Authorize]
+        public async Task<IActionResult> GetProfile()
+        {
+            try
+            {
+                var userId = HttpContext.GetUserIdExtension();
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return BadRequest("User ID not found in token.");
+                }
+
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    return BadRequest("User not found.");
+                }
+
+                var profileDto = new ProfileDto
+                {
+                    Age = user.Age,
+                    Bio = user.Bio,
+                    Weight = user.Weight,
+                    Height = user.Height,
+                    PhoneNumber = user.PhoneNumber,
+                    Picture = user.Picture                   
+                };
+
+                return Ok(profileDto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
     }
 }
