@@ -1,5 +1,4 @@
-﻿using AmdarisProject.Extensions;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WorkoutReservations.Application.Services.Interfaces;
 using WorkoutReservations.Domain.Exceptions;
@@ -32,14 +31,6 @@ namespace AmdarisProject.Controllers
                     return BadRequest(new { message = "Schedule is fully booked." });
                 }
 
-                var userId = Guid.Parse(_contextAccessor.HttpContext!.GetUserIdExtension());
-                var userBookedAlready = await _bookingService.IsUserAlreadyBookedAsync(userId, scheduleId);
-
-                if (userBookedAlready)
-                {
-                    return BadRequest(new { message = "User is already booked for this schedule." });
-                }
-
                 await _bookingService.AddBookingAsync(workoutId, scheduleId);
 
                 return Ok(new { message = "Booking created successfully." });
@@ -52,9 +43,9 @@ namespace AmdarisProject.Controllers
             {
                 return Unauthorized(new { message = ex.Message });
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return BadRequest(new { message = "Failed to create booking." });
+                return BadRequest(new { message = "Failed to create booking." + e.Message });
             }
         }
 

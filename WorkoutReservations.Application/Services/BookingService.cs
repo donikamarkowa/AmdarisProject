@@ -60,9 +60,5 @@ namespace WorkoutReservations.Application.Services
 
         }
 
-        public async Task<bool> IsUserAlreadyBookedAsync(Guid userId, Guid scheduleId)
-        {
-            return await _scheduleRepository.AnyAsync(s => s.Id == scheduleId && s.Id == scheduleId);
-        }
     }
 }
