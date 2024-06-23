@@ -1,6 +1,5 @@
 ﻿using System.Linq.Expressions;
 using WorkoutReservations.Application.DTOs.Parameters;
-using WorkoutReservations.Application.DTOs.Trainer;
 using WorkoutReservations.Application.DTOs.Workout;
 using WorkoutReservations.Application.Models.Workout;
 using WorkoutReservations.Application.Services.Interfaces;
@@ -210,6 +209,13 @@ namespace WorkoutReservations.Application.Services
             });
 
             return workoutsTitles;
+        }
+
+        public async Task<bool> IsLocaitonOfWorkoutAsync(Guid locationId, Guid workoutId)
+        {
+            var location = await _locationRepository.GetByWithInclude(t => t.Id == locationId, t => t.Workouts!);
+
+            return location != null && location.Workouts!.Any(w => w.Id == workoutId);
         }
     }
 }
