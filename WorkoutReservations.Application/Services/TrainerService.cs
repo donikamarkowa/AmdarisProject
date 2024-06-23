@@ -88,10 +88,12 @@ namespace WorkoutReservations.Application.Services
         {
             var trainers = await _userManager.GetUsersInRoleAsync("Trainer");
 
-            var trainersWithFullNames = await _trainerRepository.GetAllBy(
-                u => u.FirstName.Contains(criteria) || u.LastName.Contains(criteria));
+            var filteredTrainers = trainers
+                .Where(u => u.FirstName.Contains(criteria, StringComparison.OrdinalIgnoreCase) ||
+                            u.LastName.Contains(criteria, StringComparison.OrdinalIgnoreCase))
+                .ToList();
 
-            var trainersByCriteria = trainersWithFullNames
+            var trainersByCriteria = filteredTrainers
                 .Select(t => new AllTrainersDto
                 {
                     Id = t.Id.ToString(),
