@@ -13,12 +13,15 @@ namespace AmdarisProject.Controllers
     {
         private readonly IWorkoutService _workoutService;
         private readonly IWorkoutCategoryService _workoutCategoryService;
+        private readonly ILocationService _locationService;
         private readonly ITrainerService _trainerService;
-        public WorkoutController(IWorkoutService workoutService, IWorkoutCategoryService workoutCategoryService, ITrainerService trainerService)
+        public WorkoutController(IWorkoutService workoutService, IWorkoutCategoryService workoutCategoryService, ITrainerService trainerService, ILocationService locationService)
         {
             _workoutService = workoutService;
             _workoutCategoryService = workoutCategoryService;
             _trainerService = trainerService;
+            _locationService = locationService;
+
         }
 
         [HttpGet("all")]
@@ -184,6 +187,33 @@ namespace AmdarisProject.Controllers
             catch (Exception)
             {
                 return BadRequest(new { Message = "Unexpected error occurred while trying to add trainer to the workout! Please try again later!" });
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("addLocation")]
+        public async Task<IActionResult> AddLocation(Guid workoutId, Guid locationId)
+        {
+            try
+            {
+                var workoutExists = await _workoutService.ExistsByIdAsync(workoutId);
+                var locationExists = await _locationService.ExistsByIdAsync(locationId);
+                if (!workoutExists || !locationExists)
+                {
+                    throw new NotFoundException($"Trainer or workout not found.");
+                }
+
+                var isLocation = await _workoutService.IsLocaitonOfWorkoutAsync(locationId, workoutId);
+                if (isLocation)
+                {
+                    return BadRequest("Location is already associated with the workout.");
+                }
+                await _workoutService.AddLocationToWorkoutAsync(workoutId, locationId);
+                return Ok("Location successfully added to the workout.");
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { Message = "Unexpected error occurred while trying to add loaction to the workout! Please try again later!" });
             }
         }
 
