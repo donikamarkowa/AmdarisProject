@@ -144,15 +144,16 @@ namespace WorkoutReservations.Application.Services
             return trainers;
         }
 
-        public async Task<IEnumerable<TrainerDto>> TrainersByWorkoutIdAsync(Guid id)
+        public async Task<IEnumerable<AllTrainersDto>> TrainersByWorkoutIdAsync(Guid id)
         {
             var workout = await _workoutRepository.GetByWithInclude(w => w.Id == id, w => w.Trainers);
 
-            var trainers = workout.Trainers.Select(t => new TrainerDto
+            var trainers = workout.Trainers.Select(t => new AllTrainersDto
             {
                 Id = t.Id.ToString(),
                 FirstName = t.FirstName,
-                LastName = t.LastName
+                LastName = t.LastName,
+                Picture = t.Picture
             });
 
             return trainers;
