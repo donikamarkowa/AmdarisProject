@@ -222,6 +222,7 @@ namespace AmdarisProject.Controllers
                 {
                     Age = user.Age,
                     Bio = user.Bio,
+                    Gender = user.Gender,
                     Weight = user.Weight,
                     Height = user.Height,
                     PhoneNumber = user.PhoneNumber,
